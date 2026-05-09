@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="TestHub.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:TestHub"
+    xmlns:views="clr-namespace:TestHub.Views"
+    Title="TestHub"
+    FlyoutBehavior="Disabled"
+    Shell.NavBarIsVisible="False"
+    Shell.TabBarIsVisible="False">
+
+    <!-- The first ShellContent is the initial visible item. -->
+    <ShellContent Route="splash"
+                  ContentTemplate="{DataTemplate views:SplashPage}" />
+
+    <ShellContent Route="login"
+                  ContentTemplate="{DataTemplate views:LoginPage}" />
+
+    <ShellContent Route="home"
+                  ContentTemplate="{DataTemplate views:HomePage}" />
+
+</Shell>
