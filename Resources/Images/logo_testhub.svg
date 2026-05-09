@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="456" height="456" viewBox="0 0 456 456" version="1.1"
+<svg width="512" height="512" viewBox="0 0 512 512" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
     <defs>
+        <linearGradient id="cardBg" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#1B1F36" />
+            <stop offset="100%" stop-color="#0E1226" />
+        </linearGradient>
         <linearGradient id="goldRight" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%"   stop-color="#F4C04A" />
             <stop offset="100%" stop-color="#C7892C" />
@@ -16,14 +20,19 @@
         </linearGradient>
     </defs>
 
+    <rect x="32" y="32" width="448" height="448" rx="96" ry="96" fill="url(#cardBg)" />
+
     <g>
-        <path d="M 228,80 L 100,372 L 184,372 L 228,242 Z"
+        <path d="M 256,108 L 130,400 L 210,400 L 256,272 Z"
               fill="url(#goldLeft)" />
-        <path d="M 228,80 L 228,242 L 272,372 L 356,372 Z"
+
+        <path d="M 256,108 L 256,272 L 302,400 L 382,400 Z"
               fill="url(#goldRight)" />
-        <path d="M 172,304 L 284,304 L 268,268 L 188,268 Z"
+
+        <path d="M 200,332 L 312,332 L 296,296 L 216,296 Z"
               fill="url(#goldRight)" opacity="0.95" />
-        <path d="M 228,168 L 212,206 L 244,206 Z"
+
+        <path d="M 256,200 L 240,238 L 272,238 Z"
               fill="url(#apexAccent)" opacity="0.85" />
     </g>
 </svg>

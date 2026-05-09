@@ -17,6 +17,12 @@
     <ShellContent Route="login"
                   ContentTemplate="{DataTemplate views:LoginPage}" />
 
+    <ShellContent Route="forgotpassword"
+                  ContentTemplate="{DataTemplate views:ForgotPasswordPage}" />
+
+    <ShellContent Route="signup"
+                  ContentTemplate="{DataTemplate views:SignupPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

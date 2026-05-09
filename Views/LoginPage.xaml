@@ -10,9 +10,8 @@
              BackgroundColor="{StaticResource BrandNavy}">
 
     <ContentPage.Resources>
-        <!-- Page-local helpers (kept here because they only matter on this screen). -->
-        <Color x:Key="IconMuted">#9CA3AF</Color>
         <Color x:Key="DividerColor">#D1D5DB</Color>
+        <Color x:Key="ErrorRed">#DC2626</Color>
     </ContentPage.Resources>
 
     <Grid>
@@ -33,8 +32,8 @@
 
                     <!-- Brand logo -->
                     <Image Source="logo_testhub.png"
-                           WidthRequest="80"
-                           HeightRequest="80"
+                           WidthRequest="96"
+                           HeightRequest="96"
                            Aspect="AspectFit"
                            HorizontalOptions="Center"
                            Margin="0,60,0,16"
@@ -44,7 +43,6 @@
                         </Image.Shadow>
                     </Image>
 
-                    <!-- Title -->
                     <Label Text="Welcome Back"
                            TextColor="{StaticResource White}"
                            FontSize="30"
@@ -54,7 +52,6 @@
                            HorizontalTextAlignment="Center"
                            SemanticProperties.HeadingLevel="Level1" />
 
-                    <!-- Subtitle -->
                     <Label Text="Sign in to continue your journey"
                            TextColor="{StaticResource BrandGold}"
                            FontSize="15"
@@ -83,9 +80,9 @@
 
                                 <Border Style="{StaticResource InputBorderStyle}">
                                     <HorizontalStackLayout Spacing="10" VerticalOptions="Center">
-                                        <Label Text="&#x2709;"
-                                               TextColor="{StaticResource IconMuted}"
-                                               FontSize="18"
+                                        <Image Source="icon_mail.png"
+                                               WidthRequest="20"
+                                               HeightRequest="20"
                                                VerticalOptions="Center" />
                                         <Entry x:Name="EmailEntry"
                                                Style="{StaticResource InputEntryStyle}"
@@ -97,6 +94,12 @@
                                                SemanticProperties.Description="Email address" />
                                     </HorizontalStackLayout>
                                 </Border>
+
+                                <Label Text="{Binding EmailError}"
+                                       IsVisible="{Binding HasEmailError}"
+                                       TextColor="{StaticResource ErrorRed}"
+                                       FontSize="12"
+                                       Margin="4,0,0,0" />
                             </VerticalStackLayout>
 
                             <!-- Password field -->
@@ -105,10 +108,10 @@
 
                                 <Border Style="{StaticResource InputBorderStyle}">
                                     <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10" VerticalOptions="Center">
-                                        <Label Grid.Column="0"
-                                               Text="&#x1F512;"
-                                               TextColor="{StaticResource IconMuted}"
-                                               FontSize="16"
+                                        <Image Grid.Column="0"
+                                               Source="icon_lock.png"
+                                               WidthRequest="20"
+                                               HeightRequest="20"
                                                VerticalOptions="Center" />
                                         <Entry Grid.Column="1"
                                                x:Name="PasswordEntry"
@@ -118,19 +121,32 @@
                                                Text="{Binding Password, Mode=TwoWay}"
                                                AutomationId="LoginPasswordEntry"
                                                SemanticProperties.Description="Password" />
-                                        <Label Grid.Column="2"
-                                               Text="&#x1F441;"
-                                               TextColor="{StaticResource IconMuted}"
-                                               FontSize="18"
-                                               VerticalOptions="Center"
-                                               AutomationId="LoginTogglePassword"
-                                               SemanticProperties.Description="Toggle password visibility">
-                                            <Label.GestureRecognizers>
+                                        <Grid Grid.Column="2"
+                                              WidthRequest="32"
+                                              HeightRequest="32"
+                                              VerticalOptions="Center"
+                                              AutomationId="LoginTogglePassword"
+                                              SemanticProperties.Description="Toggle password visibility">
+                                            <Image Source="icon_eye_off.png"
+                                                   WidthRequest="22"
+                                                   HeightRequest="22"
+                                                   IsVisible="{Binding IsPasswordHidden}" />
+                                            <Image Source="icon_eye_open.png"
+                                                   WidthRequest="22"
+                                                   HeightRequest="22"
+                                                   IsVisible="{Binding IsPasswordHidden, Converter={StaticResource InverseBoolConverter}}" />
+                                            <Grid.GestureRecognizers>
                                                 <TapGestureRecognizer Command="{Binding TogglePasswordCommand}" />
-                                            </Label.GestureRecognizers>
-                                        </Label>
+                                            </Grid.GestureRecognizers>
+                                        </Grid>
                                     </Grid>
                                 </Border>
+
+                                <Label Text="{Binding PasswordError}"
+                                       IsVisible="{Binding HasPasswordError}"
+                                       TextColor="{StaticResource ErrorRed}"
+                                       FontSize="12"
+                                       Margin="4,0,0,0" />
                             </VerticalStackLayout>
 
                             <!-- Remember me + Forgot password -->

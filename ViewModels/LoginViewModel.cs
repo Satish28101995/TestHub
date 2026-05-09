@@ -13,27 +13,43 @@ public sealed class LoginViewModel : BaseViewModel
     private string _password = string.Empty;
     private bool _rememberMe;
     private bool _isPasswordHidden = true;
+    private string _emailError = string.Empty;
+    private string _passwordError = string.Empty;
 
     public LoginViewModel()
     {
         SignInCommand = new AsyncRelayCommand(SignInAsync);
         TogglePasswordCommand = new RelayCommand(() => IsPasswordHidden = !IsPasswordHidden);
-        ForgotPasswordCommand = new AsyncRelayCommand(ShowForgotPasswordAsync);
+        ForgotPasswordCommand = new AsyncRelayCommand(GoToForgotPasswordAsync);
         GoogleSignInCommand = new AsyncRelayCommand(() => SocialSignInAsync("Google"));
         AppleSignInCommand = new AsyncRelayCommand(() => SocialSignInAsync("Apple"));
-        SignUpCommand = new AsyncRelayCommand(ShowSignUpAsync);
+        SignUpCommand = new AsyncRelayCommand(GoToSignUpAsync);
     }
 
     public string Email
     {
         get => _email;
-        set => SetProperty(ref _email, value);
+        set
+        {
+            if (SetProperty(ref _email, value))
+            {
+                EmailError = string.Empty;
+                OnPropertyChanged(nameof(HasEmailError));
+            }
+        }
     }
 
     public string Password
     {
         get => _password;
-        set => SetProperty(ref _password, value);
+        set
+        {
+            if (SetProperty(ref _password, value))
+            {
+                PasswordError = string.Empty;
+                OnPropertyChanged(nameof(HasPasswordError));
+            }
+        }
     }
 
     public bool RememberMe
@@ -48,6 +64,33 @@ public sealed class LoginViewModel : BaseViewModel
         set => SetProperty(ref _isPasswordHidden, value);
     }
 
+    public string EmailError
+    {
+        get => _emailError;
+        set
+        {
+            if (SetProperty(ref _emailError, value))
+            {
+                OnPropertyChanged(nameof(HasEmailError));
+            }
+        }
+    }
+
+    public string PasswordError
+    {
+        get => _passwordError;
+        set
+        {
+            if (SetProperty(ref _passwordError, value))
+            {
+                OnPropertyChanged(nameof(HasPasswordError));
+            }
+        }
+    }
+
+    public bool HasEmailError => !string.IsNullOrEmpty(EmailError);
+    public bool HasPasswordError => !string.IsNullOrEmpty(PasswordError);
+
     public ICommand SignInCommand { get; }
     public ICommand TogglePasswordCommand { get; }
     public ICommand ForgotPasswordCommand { get; }
@@ -57,9 +100,8 @@ public sealed class LoginViewModel : BaseViewModel
 
     private async Task SignInAsync()
     {
-        if (!ValidateInputs(out var validationError))
+        if (!ValidateInputs())
         {
-            await DisplayAlertSafeAsync("Sign in failed", validationError, "OK").ConfigureAwait(true);
             return;
         }
 
@@ -80,40 +122,57 @@ public sealed class LoginViewModel : BaseViewModel
         }
     }
 
-    private bool ValidateInputs(out string error)
+    private bool ValidateInputs()
     {
-        if (string.IsNullOrWhiteSpace(Email) || !EmailPattern.IsMatch(Email))
+        var ok = true;
+
+        if (string.IsNullOrWhiteSpace(Email))
         {
-            error = "Please enter a valid email address.";
-            return false;
+            EmailError = "Email is required.";
+            ok = false;
+        }
+        else if (!EmailPattern.IsMatch(Email.Trim()))
+        {
+            EmailError = "Please enter a valid email address.";
+            ok = false;
+        }
+        else
+        {
+            EmailError = string.Empty;
         }
 
         if (string.IsNullOrEmpty(Password))
         {
-            error = "Password cannot be empty.";
-            return false;
+            PasswordError = "Password is required.";
+            ok = false;
+        }
+        else if (Password.Length < 6)
+        {
+            PasswordError = "Password must be at least 6 characters.";
+            ok = false;
+        }
+        else
+        {
+            PasswordError = string.Empty;
         }
 
-        error = string.Empty;
-        return true;
+        return ok;
     }
 
-    private static Task ShowForgotPasswordAsync()
-        => DisplayAlertSafeAsync(
-            "Forgot Password",
-            "Password reset flow is not implemented yet.",
-            "OK");
+    private static Task GoToForgotPasswordAsync()
+        => Shell.Current is null
+            ? Task.CompletedTask
+            : Shell.Current.GoToAsync("//forgotpassword");
+
+    private static Task GoToSignUpAsync()
+        => Shell.Current is null
+            ? Task.CompletedTask
+            : Shell.Current.GoToAsync("//signup");
 
     private static Task SocialSignInAsync(string provider)
         => DisplayAlertSafeAsync(
             $"{provider} Sign-In",
             $"{provider} sign-in is not implemented yet.",
-            "OK");
-
-    private static Task ShowSignUpAsync()
-        => DisplayAlertSafeAsync(
-            "Sign Up",
-            "Sign-up flow is not implemented yet.",
             "OK");
 
     private static Task DisplayAlertSafeAsync(string title, string message, string accept)

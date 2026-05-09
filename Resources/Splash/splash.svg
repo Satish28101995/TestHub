@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg width="456" height="456" viewBox="0 0 456 456" version="1.1"
-     xmlns="http://www.w3.org/2000/svg"
-     xmlns:xlink="http://www.w3.org/1999/xlink">
+     xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <linearGradient id="SteelBlueLeft" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stop-color="#48587E" />
-            <stop offset="100%" stop-color="#2F3D5C" />
-        </linearGradient>
-        <linearGradient id="GoldRight" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stop-color="#E0A93B" />
+        <linearGradient id="goldRight" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#F4C04A" />
             <stop offset="100%" stop-color="#C7892C" />
         </linearGradient>
-        <linearGradient id="ApexAccent" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stop-color="#3B4A6B" />
-            <stop offset="100%" stop-color="#243152" />
+        <linearGradient id="goldLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#3F4774" />
+            <stop offset="100%" stop-color="#1F2547" />
+        </linearGradient>
+        <linearGradient id="apexAccent" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#2A2F55" />
+            <stop offset="100%" stop-color="#101428" />
         </linearGradient>
     </defs>
 
     <g>
-        <path d="M 228,86 L 78,376 L 160,376 L 228,200 Z"
-              fill="url(#SteelBlueLeft)" />
-
-        <path d="M 240,176 L 228,200 L 268,278 L 286,256 Z"
-              fill="url(#ApexAccent)" opacity="0.55" />
-
-        <path d="M 228,86 L 228,200 L 296,376 L 378,376 Z"
-              fill="url(#GoldRight)" />
+        <path d="M 228,80 L 100,372 L 184,372 L 228,242 Z"
+              fill="url(#goldLeft)" />
+        <path d="M 228,80 L 228,242 L 272,372 L 356,372 Z"
+              fill="url(#goldRight)" />
+        <path d="M 172,304 L 284,304 L 268,268 L 188,268 Z"
+              fill="url(#goldRight)" opacity="0.95" />
+        <path d="M 228,168 L 212,206 L 244,206 Z"
+              fill="url(#apexAccent)" opacity="0.85" />
     </g>
 </svg>
