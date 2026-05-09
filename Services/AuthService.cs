@@ -43,7 +43,25 @@ public sealed class AuthService : IAuthService
         return result;
     }
 
-    public Task SignOutAsync() => _session.ClearAsync();
+    public async Task<ApiResult<bool>> SignOutAsync(CancellationToken ct = default)
+    {
+        ApiResult<bool> result;
+        try
+        {
+            result = await _api
+                .PostAsync<bool>(AppConfig.Endpoints.Logout, body: null, requireAuth: true, ct)
+                .ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            result = ApiResult<bool>.Fail(ex.Message, 0);
+        }
+
+        // Always clear the local session so the user is signed out
+        // client-side regardless of whether the server call succeeded.
+        await _session.ClearAsync().ConfigureAwait(false);
+        return result;
+    }
 
     /// <summary>
     /// Returns the platform's push notification token if one is available.

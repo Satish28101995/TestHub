@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.ProfilePage"
+             x:DataType="vm:ProfileViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource CardBg}">
+
+    <ContentPage.Resources>
+        <Color x:Key="ActionLink">#5B7BFF</Color>
+        <Color x:Key="VerifiedGreenBg">#D1FAE5</Color>
+        <Color x:Key="VerifiedGreen">#10B981</Color>
+        <Color x:Key="ApprovedGreen">#10B981</Color>
+        <Color x:Key="CardBorder">#EAECF2</Color>
+        <Color x:Key="MetaText">#64748B</Color>
+        <Color x:Key="DeleteRed">#DC2626</Color>
+        <Color x:Key="SignOutGold">#E0A93B</Color>
+        <Color x:Key="TabActiveBg">#FBE6B7</Color>
+        <Color x:Key="TabIconMuted">#9AA3B5</Color>
+        <Color x:Key="NotifDot">#EF4444</Color>
+        <Color x:Key="DisputeBadgeBg">#FEF3C7</Color>
+        <Color x:Key="DisputeBadgeText">#92400E</Color>
+
+        <Style x:Key="StatusRowStyle" TargetType="Grid">
+            <Setter Property="ColumnDefinitions" Value="Auto,*,Auto" />
+            <Setter Property="ColumnSpacing" Value="12" />
+            <Setter Property="Padding" Value="0,8" />
+        </Style>
+
+        <Style x:Key="InfoRowStyle" TargetType="Grid">
+            <Setter Property="ColumnDefinitions" Value="Auto,*,Auto" />
+            <Setter Property="ColumnSpacing" Value="14" />
+            <Setter Property="Padding" Value="0,10" />
+        </Style>
+
+        <Style x:Key="InfoLabelStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource MetaText}" />
+            <Setter Property="FontSize" Value="12" />
+        </Style>
+
+        <Style x:Key="InfoValueStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource BrandNavy}" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+            <Setter Property="Stroke" Value="{StaticResource CardBorder}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="16" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="16" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ============================================================ -->
+        <!-- BODY                                                           -->
+        <!-- ============================================================ -->
+        <ScrollView Grid.Row="0">
+            <VerticalStackLayout Spacing="16">
+
+                <!-- Header (navy) -->
+                <Border BackgroundColor="{StaticResource BrandNavy}"
+                        Stroke="Transparent"
+                        StrokeThickness="0"
+                        Padding="20,28,20,24">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="{StaticResource BrandNavyLight}" Offset="0.0" />
+                            <GradientStop Color="{StaticResource BrandNavy}"      Offset="1.0" />
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <VerticalStackLayout Spacing="20">
+                        <Label Text="Profile"
+                               TextColor="{StaticResource White}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="14">
+                            <!-- Avatar -->
+                            <Border Grid.Column="0"
+                                    BackgroundColor="{StaticResource White}"
+                                    Stroke="Transparent"
+                                    WidthRequest="72"
+                                    HeightRequest="72"
+                                    Padding="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="36" />
+                                </Border.StrokeShape>
+
+                                <!-- Fallback icon (when no profile image) -->
+                                <Image Source="icon_user_avatar.png"
+                                       WidthRequest="44"
+                                       HeightRequest="44"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding HasProfileImage, Converter={StaticResource InverseBoolConverter}}" />
+                                <!-- Profile image -->
+                                <Image Source="{Binding ProfileImage}"
+                                       Aspect="AspectFill"
+                                       IsVisible="{Binding HasProfileImage}" />
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6" VerticalOptions="Center">
+                                <Label Text="{Binding FullName, FallbackValue='Profile'}"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       LineBreakMode="TailTruncation" />
+                                <Label Text="{Binding Email}"
+                                       TextColor="#C7D2FE"
+                                       FontSize="13"
+                                       LineBreakMode="TailTruncation" />
+
+                                <!-- Verified pill -->
+                                <Border BackgroundColor="{StaticResource VerifiedGreenBg}"
+                                        Stroke="Transparent"
+                                        Padding="10,4"
+                                        HorizontalOptions="Start"
+                                        IsVisible="{Binding IsVerified}">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="999" />
+                                    </Border.StrokeShape>
+                                    <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                        <Image Source="icon_check_small.png"
+                                               WidthRequest="13"
+                                               HeightRequest="13"
+                                               VerticalOptions="Center" />
+                                        <Label Text="Verified"
+                                               TextColor="{StaticResource VerifiedGreen}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold" />
+                                    </HorizontalStackLayout>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Page padding container -->
+                <VerticalStackLayout Padding="16,0,16,16" Spacing="14">
+
+                    <!-- Account Status -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Account Status"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   Margin="0,0,0,4" />
+
+                            <!-- ID Verified -->
+                            <Grid Style="{StaticResource StatusRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_check_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsGovernmentIdVerified}" />
+                                <Image Grid.Column="0"
+                                       Source="icon_warn_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsGovernmentIdVerified, Converter={StaticResource InverseBoolConverter}}" />
+                                <Label Grid.Column="1"
+                                       Text="ID Verified"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="2"
+                                       Text="Approved"
+                                       TextColor="{StaticResource ApprovedGreen}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsGovernmentIdVerified}" />
+                                <Label Grid.Column="2"
+                                       Text="Add Now"
+                                       TextColor="{StaticResource ActionLink}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsGovernmentIdVerified, Converter={StaticResource InverseBoolConverter}}" />
+                            </Grid>
+
+                            <!-- Bank Account Linked -->
+                            <Grid Style="{StaticResource StatusRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_check_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsBankAccountLinked}" />
+                                <Image Grid.Column="0"
+                                       Source="icon_warn_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsBankAccountLinked, Converter={StaticResource InverseBoolConverter}}" />
+                                <Label Grid.Column="1"
+                                       Text="Bank Account Linked"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="2"
+                                       Text="Active"
+                                       TextColor="{StaticResource ApprovedGreen}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsBankAccountLinked}" />
+                                <Label Grid.Column="2"
+                                       Text="Setup"
+                                       TextColor="{StaticResource ActionLink}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsBankAccountLinked, Converter={StaticResource InverseBoolConverter}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ManageBankCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+
+                            <!-- E-Signature -->
+                            <Grid Style="{StaticResource StatusRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_check_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsESignatureCompleted}" />
+                                <Image Grid.Column="0"
+                                       Source="icon_warn_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsESignatureCompleted, Converter={StaticResource InverseBoolConverter}}" />
+                                <Label Grid.Column="1"
+                                       Text="E-Signature"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="2"
+                                       Text="Active"
+                                       TextColor="{StaticResource ApprovedGreen}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsESignatureCompleted}" />
+                                <Label Grid.Column="2"
+                                       Text="Add Now"
+                                       TextColor="{StaticResource ActionLink}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsESignatureCompleted, Converter={StaticResource InverseBoolConverter}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding AddESignatureCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+
+                            <!-- Contract Terms -->
+                            <Grid Style="{StaticResource StatusRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_check_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsContractTermsCompleted}" />
+                                <Image Grid.Column="0"
+                                       Source="icon_warn_circle.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       IsVisible="{Binding IsContractTermsCompleted, Converter={StaticResource InverseBoolConverter}}" />
+                                <Label Grid.Column="1"
+                                       Text="Contract Terms"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       VerticalOptions="Center" />
+                                <Label Grid.Column="2"
+                                       Text="Active"
+                                       TextColor="{StaticResource ApprovedGreen}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsContractTermsCompleted}" />
+                                <Label Grid.Column="2"
+                                       Text="Add Now"
+                                       TextColor="{StaticResource ActionLink}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsContractTermsCompleted, Converter={StaticResource InverseBoolConverter}}">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding AddTermsCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Edit / Change Password tiles -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Border Grid.Column="0"
+                                BackgroundColor="{StaticResource BrandGold}"
+                                Stroke="Transparent"
+                                Padding="0"
+                                HeightRequest="120"
+                                AutomationId="ProfileEditButton">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding EditProfileCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="10">
+                                <Border BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="48"
+                                        HeightRequest="48"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="24" />
+                                    </Border.StrokeShape>
+                                    <Image Source="icon_edit.png"
+                                           WidthRequest="22"
+                                           HeightRequest="22"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Edit Profile"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+
+                        <Border Grid.Column="1"
+                                BackgroundColor="{StaticResource BrandNavy}"
+                                Stroke="Transparent"
+                                Padding="0"
+                                HeightRequest="120"
+                                AutomationId="ProfileChangePasswordButton">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="16" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ChangePasswordCommand}" />
+                            </Border.GestureRecognizers>
+                            <VerticalStackLayout HorizontalOptions="Center"
+                                                 VerticalOptions="Center"
+                                                 Spacing="10">
+                                <Border BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="48"
+                                        HeightRequest="48"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="24" />
+                                    </Border.StrokeShape>
+                                    <Image Source="icon_lock_white.png"
+                                           WidthRequest="22"
+                                           HeightRequest="22"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                                <Label Text="Change Password"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       HorizontalTextAlignment="Center" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- Personal Information -->
+                    <Border Style="{StaticResource CardStyle}">
+                        <VerticalStackLayout Spacing="2">
+                            <Label Text="Personal Information"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   Margin="0,0,0,6" />
+
+                            <!-- Email -->
+                            <Grid Style="{StaticResource InfoRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_mail.png"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Email" Style="{StaticResource InfoLabelStyle}" />
+                                    <Label Text="{Binding Email, FallbackValue='—'}" Style="{StaticResource InfoValueStyle}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="#F1F2F6" />
+
+                            <!-- Phone -->
+                            <Grid Style="{StaticResource InfoRowStyle}">
+                                <Image Grid.Column="0"
+                                       Source="icon_phone.png"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Phone Number" Style="{StaticResource InfoLabelStyle}" />
+                                    <Label Text="{Binding PhoneNumber, FallbackValue='—'}" Style="{StaticResource InfoValueStyle}" />
+                                </VerticalStackLayout>
+                            </Grid>
+
+                            <BoxView HeightRequest="1" Color="#F1F2F6" />
+
+                            <!-- Bank Account -->
+                            <Grid Style="{StaticResource InfoRowStyle}">
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ManageBankCommand}" />
+                                </Grid.GestureRecognizers>
+                                <Image Grid.Column="0"
+                                       Source="icon_card.png"
+                                       WidthRequest="20"
+                                       HeightRequest="20"
+                                       VerticalOptions="Center" />
+                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                    <Label Text="Bank Account" Style="{StaticResource InfoLabelStyle}" />
+                                    <Label Text="{Binding BankAccountMasked}" Style="{StaticResource InfoValueStyle}" />
+                                </VerticalStackLayout>
+                                <Image Grid.Column="2"
+                                       Source="icon_chevron_right.png"
+                                       WidthRequest="18"
+                                       HeightRequest="18"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Premium Plan -->
+                    <Border Style="{StaticResource CardStyle}" Padding="14">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenPremiumCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Image Grid.Column="0"
+                                   Source="icon_crown_filled.png"
+                                   WidthRequest="40"
+                                   HeightRequest="40"
+                                   VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Premium Plan"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                                <Label Text="{Binding PremiumStatus}"
+                                       TextColor="{StaticResource MetaText}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                            <Image Grid.Column="2"
+                                   Source="icon_chevron_right.png"
+                                   WidthRequest="18"
+                                   HeightRequest="18"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Dispute Tickets -->
+                    <Border Style="{StaticResource CardStyle}" Padding="14,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenDisputesCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
+                            <Image Grid.Column="0"
+                                   Source="icon_chat.png"
+                                   WidthRequest="22"
+                                   HeightRequest="22"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="Dispute Tickets"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center" />
+
+                            <Border Grid.Column="2"
+                                    BackgroundColor="{StaticResource DisputeBadgeBg}"
+                                    Stroke="Transparent"
+                                    Padding="9,2"
+                                    VerticalOptions="Center"
+                                    IsVisible="{Binding HasDisputeTickets}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="999" />
+                                </Border.StrokeShape>
+                                <Label Text="{Binding DisputeTicketLabel}"
+                                       TextColor="{StaticResource DisputeBadgeText}"
+                                       FontSize="11"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                            </Border>
+
+                            <Image Grid.Column="3"
+                                   Source="icon_chevron_right.png"
+                                   WidthRequest="18"
+                                   HeightRequest="18"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- FAQ & Support -->
+                    <Border Style="{StaticResource CardStyle}" Padding="14,16">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding OpenFaqCommand}" />
+                        </Border.GestureRecognizers>
+                        <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                            <Image Grid.Column="0"
+                                   Source="icon_help.png"
+                                   WidthRequest="22"
+                                   HeightRequest="22"
+                                   VerticalOptions="Center" />
+                            <Label Grid.Column="1"
+                                   Text="FAQ &amp; Support"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="14"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center" />
+                            <Image Grid.Column="2"
+                                   Source="icon_chevron_right.png"
+                                   WidthRequest="18"
+                                   HeightRequest="18"
+                                   VerticalOptions="Center" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Sign Out -->
+                    <Border BackgroundColor="{StaticResource White}"
+                            Stroke="{StaticResource SignOutGold}"
+                            StrokeThickness="1.5"
+                            Padding="0"
+                            HeightRequest="50"
+                            AutomationId="ProfileSignOut">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding SignOutCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label Text="Sign Out"
+                               TextColor="{StaticResource SignOutGold}"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                    <!-- Delete Account -->
+                    <Border BackgroundColor="{StaticResource White}"
+                            Stroke="{StaticResource DeleteRed}"
+                            StrokeThickness="1.5"
+                            Padding="0"
+                            HeightRequest="50"
+                            AutomationId="ProfileDeleteAccount">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding DeleteAccountCommand}" />
+                        </Border.GestureRecognizers>
+                        <Label Text="Delete Account"
+                               TextColor="{StaticResource DeleteRed}"
+                               FontSize="15"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- ============================================================ -->
+        <!-- TAB BAR (Profile active)                                       -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource White}"
+                Stroke="#EAECF2"
+                StrokeThickness="1"
+                Padding="12,8,12,12">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20,20,0,0" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.08" Radius="14" Offset="0,-4" />
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
+
+                <VerticalStackLayout Grid.Column="0"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="TabHome">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_home.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Home" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="1"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="TabProjects">
+                    <Image Source="tab_projects.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Projects" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="2"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="TabInvoices">
+                    <Image Source="tab_invoices.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Invoices" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <VerticalStackLayout Grid.Column="3"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="TabReports">
+                    <Image Source="tab_reports.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Reports" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Profile (active) -->
+                <Border Grid.Column="4"
+                        BackgroundColor="{StaticResource TabActiveBg}"
+                        Stroke="Transparent"
+                        Padding="0,8"
+                        AutomationId="TabProfile">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Grid WidthRequest="24" HeightRequest="24" HorizontalOptions="Center">
+                            <Image Source="tab_profile.png" WidthRequest="22" HeightRequest="22" />
+                            <Ellipse Fill="{StaticResource NotifDot}"
+                                     WidthRequest="6"
+                                     HeightRequest="6"
+                                     HorizontalOptions="End"
+                                     VerticalOptions="Start" />
+                        </Grid>
+                        <Label Text="Profile"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+            </Grid>
+        </Border>
+    </Grid>
+
+</ContentPage>

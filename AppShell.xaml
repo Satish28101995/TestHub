@@ -32,6 +32,9 @@
     <ShellContent Route="terms"
                   ContentTemplate="{DataTemplate views:TermsPage}" />
 
+    <ShellContent Route="profile"
+                  ContentTemplate="{DataTemplate views:ProfilePage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

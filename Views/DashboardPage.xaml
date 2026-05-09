@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:TestHub.ViewModels"
+             xmlns:models="clr-namespace:TestHub.Models.Contractor"
              x:Class="TestHub.Views.DashboardPage"
              x:DataType="vm:DashboardViewModel"
              Shell.NavBarIsVisible="False"
@@ -15,6 +16,14 @@
         <Color x:Key="TabActiveBg">#FBE6B7</Color>
         <Color x:Key="TabIconMuted">#9AA3B5</Color>
         <Color x:Key="NotifDot">#EF4444</Color>
+        <Color x:Key="StatCardBg">#262C54</Color>
+        <Color x:Key="StatTrendGreen">#34D399</Color>
+        <Color x:Key="StatTrendCream">#F4C04A</Color>
+        <Color x:Key="ActionRequiredBg">#FEF3C7</Color>
+        <Color x:Key="ActionRequiredBorder">#F59E0B</Color>
+        <Color x:Key="ProjectCardBorder">#EAECF2</Color>
+        <Color x:Key="BulletDot">#94A3B8</Color>
+        <Color x:Key="MetaText">#64748B</Color>
 
         <Style x:Key="StatusRowStyle" TargetType="Grid">
             <Setter Property="ColumnDefinitions" Value="Auto,*,Auto" />
@@ -43,16 +52,63 @@
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
             <Setter Property="VerticalOptions" Value="Center" />
         </Style>
+
+        <Style x:Key="StatCardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource StatCardBg}" />
+            <Setter Property="Stroke" Value="#3A4078" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="14" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="14" />
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource BrandGold}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="CharacterSpacing" Value="0.6" />
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource White}" />
+            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <Style x:Key="StatTrendStyle" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource StatTrendGreen}" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <Style x:Key="QuickActionTileStyle" TargetType="Border">
+            <Setter Property="Stroke" Value="Transparent" />
+            <Setter Property="StrokeThickness" Value="0" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="14" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="0" />
+        </Style>
     </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto,*,Auto">
 
-        <!-- ============================ HEADER (navy) ============================ -->
+        <!-- ============================================================ -->
+        <!-- HEADER: ONBOARDING (any flag is false)                         -->
+        <!-- ============================================================ -->
         <Border Grid.Row="0"
                 BackgroundColor="{StaticResource BrandNavy}"
                 Stroke="Transparent"
                 StrokeThickness="0"
-                Padding="20,28,20,24">
+                Padding="20,28,20,24"
+                IsVisible="{Binding IsOnboardingPending}">
             <Border.StrokeShape>
                 <RoundRectangle CornerRadius="0,0,28,28" />
             </Border.StrokeShape>
@@ -236,43 +292,563 @@
             </VerticalStackLayout>
         </Border>
 
-        <!-- ============================ BODY ============================ -->
-        <ScrollView Grid.Row="1">
-            <VerticalStackLayout Padding="20,24,20,24" Spacing="16">
+        <!-- ============================================================ -->
+        <!-- HEADER: COMPLETED (all four flags are true)                    -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource BrandNavy}"
+                Stroke="Transparent"
+                StrokeThickness="0"
+                Padding="20,28,20,28"
+                IsVisible="{Binding IsOnboardingComplete}">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,28,28" />
+            </Border.StrokeShape>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource BrandNavyLight}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource BrandNavy}"      Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
 
-                <!-- Thank-you card -->
-                <Border BackgroundColor="{StaticResource White}"
-                        Stroke="#EAECF2"
-                        StrokeThickness="1"
-                        Padding="24,28">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20" />
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Opacity="0.08" Radius="20" Offset="0,4" />
-                    </Border.Shadow>
+            <VerticalStackLayout Spacing="18">
 
-                    <VerticalStackLayout Spacing="14" HorizontalOptions="Center">
-                        <Label Text="Thank you for completing your profile!"
+                <!-- Welcome + bell -->
+                <Grid ColumnDefinitions="*,Auto">
+                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                        <Label Text="Welcome back,"
                                TextColor="{StaticResource BrandGold}"
-                               FontSize="22"
+                               FontSize="13" />
+                        <Label Text="{Binding FullName, FallbackValue='Welcome back'}"
+                               TextColor="{StaticResource White}"
+                               FontSize="24"
                                FontAttributes="Bold"
-                               FontFamily="OpenSansSemibold"
-                               LineHeight="1.2"
-                               HorizontalTextAlignment="Center" />
-
-                        <Label Text="We do our best to keep this community real and safe — so you can enjoy genuine connections."
-                               TextColor="{StaticResource BrandNavy}"
-                               FontSize="14"
-                               LineHeight="1.45"
-                               HorizontalTextAlignment="Center" />
+                               FontFamily="OpenSansSemibold" />
                     </VerticalStackLayout>
-                </Border>
+
+                    <Grid Grid.Column="1"
+                          WidthRequest="44"
+                          HeightRequest="44"
+                          AutomationId="DashboardNotificationsCompleted">
+                        <Border BackgroundColor="#33FFFFFF"
+                                Stroke="Transparent"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14" />
+                            </Border.StrokeShape>
+                            <Image Source="icon_bell.png"
+                                   WidthRequest="20"
+                                   HeightRequest="20"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+
+                        <Ellipse Fill="{StaticResource NotifDot}"
+                                 Stroke="{StaticResource BrandNavy}"
+                                 StrokeThickness="2"
+                                 WidthRequest="10"
+                                 HeightRequest="10"
+                                 HorizontalOptions="End"
+                                 VerticalOptions="Start"
+                                 Margin="0,4,4,0"
+                                 IsVisible="{Binding HasNotifications}" />
+
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NotificationsCommand}" />
+                        </Grid.GestureRecognizers>
+                    </Grid>
+                </Grid>
+
+                <!-- 2x2 stat grid -->
+                <Grid ColumnDefinitions="*,*"
+                      RowDefinitions="Auto,Auto"
+                      ColumnSpacing="12"
+                      RowSpacing="12">
+
+                    <!-- Projects -->
+                    <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
+                                <Label Grid.Column="0"
+                                       Text="PROJECTS"
+                                       Style="{StaticResource StatLabelStyle}" />
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="9" />
+                                    </Border.StrokeShape>
+                                    <Image Source="stat_doc.png"
+                                           WidthRequest="16"
+                                           HeightRequest="16"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding ProjectsCount}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
+                                <Label Text="{Binding ProjectsTrend}" Style="{StaticResource StatTrendStyle}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Active -->
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
+                                <Label Grid.Column="0"
+                                       Text="ACTIVE"
+                                       Style="{StaticResource StatLabelStyle}" />
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="9" />
+                                    </Border.StrokeShape>
+                                    <Image Source="stat_lightning.png"
+                                           WidthRequest="14"
+                                           HeightRequest="14"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding ActiveCount}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="✓" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
+                                <Label Text="{Binding ActiveTrend}" Style="{StaticResource StatTrendStyle}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Revenue -->
+                    <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource StatCardStyle}">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
+                                <Label Grid.Column="0"
+                                       Text="REVENUE"
+                                       Style="{StaticResource StatLabelStyle}" />
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="9" />
+                                    </Border.StrokeShape>
+                                    <Image Source="stat_dollar.png"
+                                           WidthRequest="14"
+                                           HeightRequest="14"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding RevenueValue}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4">
+                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
+                                <Label Text="{Binding RevenueTrend}" Style="{StaticResource StatTrendStyle}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Pending -->
+                    <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                        <VerticalStackLayout Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
+                                <Label Grid.Column="0"
+                                       Text="PENDING"
+                                       Style="{StaticResource StatLabelStyle}" />
+                                <Border Grid.Column="1"
+                                        BackgroundColor="#33FFFFFF"
+                                        Stroke="Transparent"
+                                        WidthRequest="30"
+                                        HeightRequest="30"
+                                        Padding="0">
+                                    <Border.StrokeShape>
+                                        <RoundRectangle CornerRadius="9" />
+                                    </Border.StrokeShape>
+                                    <Image Source="stat_clock.png"
+                                           WidthRequest="14"
+                                           HeightRequest="14"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding PendingValue}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4">
+                                <Image Source="icon_invoices_tile.png" WidthRequest="11" HeightRequest="11" />
+                                <Label Text="{Binding PendingTrend}"
+                                       TextColor="{StaticResource StatTrendCream}"
+                                       FontSize="11"
+                                       FontFamily="OpenSansSemibold" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
 
             </VerticalStackLayout>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- BODY                                                           -->
+        <!-- ============================================================ -->
+        <ScrollView Grid.Row="1">
+            <Grid>
+
+                <!-- Onboarding body -->
+                <VerticalStackLayout Padding="20,24,20,24"
+                                     Spacing="16"
+                                     IsVisible="{Binding IsOnboardingPending}">
+                    <Border BackgroundColor="{StaticResource White}"
+                            Stroke="#EAECF2"
+                            StrokeThickness="1"
+                            Padding="24,28">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.08" Radius="20" Offset="0,4" />
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="14" HorizontalOptions="Center">
+                            <Label Text="Thank you for completing your profile!"
+                                   TextColor="{StaticResource BrandGold}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   LineHeight="1.2"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="We do our best to keep this community real and safe — so you can enjoy genuine connections."
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="14"
+                                   LineHeight="1.45"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+
+                <!-- Completed body -->
+                <VerticalStackLayout Padding="16,18,16,16"
+                                     Spacing="18"
+                                     IsVisible="{Binding IsOnboardingComplete}">
+
+                    <!-- Quick Actions card -->
+                    <Border BackgroundColor="{StaticResource White}"
+                            Stroke="{StaticResource ProjectCardBorder}"
+                            StrokeThickness="1"
+                            Padding="18">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.06" Radius="14" Offset="0,4" />
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="14">
+                            <Label Text="Quick Actions"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+
+                            <!-- Big tiles -->
+                            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                <Border Grid.Column="0"
+                                        Style="{StaticResource QuickActionTileStyle}"
+                                        BackgroundColor="{StaticResource BrandNavy}"
+                                        HeightRequest="120"
+                                        AutomationId="QuickActionNewQuote">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding NewQuoteCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="10">
+                                        <Image Source="icon_plus_circle.png"
+                                               WidthRequest="44"
+                                               HeightRequest="44" />
+                                        <Label Text="New Quote"
+                                               TextColor="{StaticResource White}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold"
+                                               HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource QuickActionTileStyle}"
+                                        BackgroundColor="{StaticResource BrandGold}"
+                                        HeightRequest="120"
+                                        AutomationId="QuickActionProjects">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ProjectsCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="10">
+                                        <Image Source="icon_doc_tile.png"
+                                               WidthRequest="44"
+                                               HeightRequest="44" />
+                                        <Label Text="Projects"
+                                               TextColor="{StaticResource White}"
+                                               FontSize="14"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold"
+                                               HorizontalTextAlignment="Center" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+
+                            <!-- Small tiles -->
+                            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                                <Border Grid.Column="0"
+                                        Style="{StaticResource QuickActionTileStyle}"
+                                        BackgroundColor="#F8FAFC"
+                                        Stroke="{StaticResource ProjectCardBorder}"
+                                        StrokeThickness="1"
+                                        HeightRequest="86"
+                                        AutomationId="QuickActionContracts">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ContractsCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="6">
+                                        <Image Source="icon_contracts_tile.png"
+                                               WidthRequest="22"
+                                               HeightRequest="22" />
+                                        <Label Text="Contracts"
+                                               TextColor="{StaticResource BrandNavy}"
+                                               FontSize="12"
+                                               FontFamily="OpenSansSemibold" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <Border Grid.Column="1"
+                                        Style="{StaticResource QuickActionTileStyle}"
+                                        BackgroundColor="#F8FAFC"
+                                        Stroke="{StaticResource ProjectCardBorder}"
+                                        StrokeThickness="1"
+                                        HeightRequest="86"
+                                        AutomationId="QuickActionInvoices">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding InvoicesCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="6">
+                                        <Image Source="icon_invoices_tile.png"
+                                               WidthRequest="22"
+                                               HeightRequest="22" />
+                                        <Label Text="Invoices"
+                                               TextColor="{StaticResource BrandNavy}"
+                                               FontSize="12"
+                                               FontFamily="OpenSansSemibold" />
+                                    </VerticalStackLayout>
+                                </Border>
+
+                                <Border Grid.Column="2"
+                                        Style="{StaticResource QuickActionTileStyle}"
+                                        BackgroundColor="#F8FAFC"
+                                        Stroke="{StaticResource ProjectCardBorder}"
+                                        StrokeThickness="1"
+                                        HeightRequest="86"
+                                        AutomationId="QuickActionReports">
+                                    <Border.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ReportsCommand}" />
+                                    </Border.GestureRecognizers>
+                                    <VerticalStackLayout HorizontalOptions="Center"
+                                                         VerticalOptions="Center"
+                                                         Spacing="6">
+                                        <Image Source="icon_reports_tile.png"
+                                               WidthRequest="22"
+                                               HeightRequest="22" />
+                                        <Label Text="Reports"
+                                               TextColor="{StaticResource BrandNavy}"
+                                               FontSize="12"
+                                               FontFamily="OpenSansSemibold" />
+                                    </VerticalStackLayout>
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Action Required card -->
+                    <Border BackgroundColor="{StaticResource ActionRequiredBg}"
+                            Stroke="{StaticResource ActionRequiredBorder}"
+                            StrokeThickness="1"
+                            Padding="16">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CompleteActionCommand}" />
+                        </Border.GestureRecognizers>
+
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Image Grid.Column="0"
+                                   Source="icon_alert_filled.png"
+                                   WidthRequest="28"
+                                   HeightRequest="28"
+                                   VerticalOptions="Start" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Action Required"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                                <Label Text="Complete ID verification to unlock premium features"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="12" />
+                                <Label Text="Complete now →"
+                                       TextColor="{StaticResource ActionRequiredBorder}"
+                                       FontSize="13"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       Margin="0,6,0,0" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- Recent Projects -->
+                    <VerticalStackLayout Spacing="10">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Label Grid.Column="0"
+                                   Text="Recent Projects"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                            <Label Grid.Column="1"
+                                   Text="View All →"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center"
+                                   AutomationId="DashboardViewAllProjects">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ViewAllProjectsCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                        </Grid>
+
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding RecentProjects}"
+                                             Spacing="10">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate x:DataType="models:RecentProjectItem">
+                                    <Border BackgroundColor="{StaticResource White}"
+                                            Stroke="{StaticResource ProjectCardBorder}"
+                                            StrokeThickness="1"
+                                            Padding="16,14">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="14" />
+                                        </Border.StrokeShape>
+
+                                        <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                                            <!-- Title + badge -->
+                                            <Label Grid.Row="0" Grid.Column="0"
+                                                   Text="{Binding Title}"
+                                                   TextColor="{StaticResource BrandNavy}"
+                                                   FontSize="15"
+                                                   FontAttributes="Bold"
+                                                   FontFamily="OpenSansSemibold"
+                                                   VerticalOptions="Center" />
+                                            <Border Grid.Row="0" Grid.Column="1"
+                                                    BackgroundColor="{Binding BadgeBackground}"
+                                                    Stroke="Transparent"
+                                                    Padding="10,4"
+                                                    VerticalOptions="Center">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="999" />
+                                                </Border.StrokeShape>
+                                                <Label Text="{Binding BadgeText}"
+                                                       TextColor="{Binding BadgeTextColor}"
+                                                       FontSize="11"
+                                                       FontFamily="OpenSansSemibold" />
+                                            </Border>
+
+                                            <!-- Client + date -->
+                                            <HorizontalStackLayout Grid.Row="1"
+                                                                   Grid.Column="0"
+                                                                   Grid.ColumnSpan="2"
+                                                                   Spacing="14">
+                                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                                    <Ellipse Fill="{StaticResource BulletDot}"
+                                                             WidthRequest="4"
+                                                             HeightRequest="4"
+                                                             VerticalOptions="Center" />
+                                                    <Label Text="{Binding ClientName}"
+                                                           TextColor="{StaticResource MetaText}"
+                                                           FontSize="12"
+                                                           VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+                                                <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                                    <Image Source="icon_calendar_small.png"
+                                                           WidthRequest="13"
+                                                           HeightRequest="13"
+                                                           VerticalOptions="Center" />
+                                                    <Label Text="{Binding DateLabel}"
+                                                           TextColor="{StaticResource MetaText}"
+                                                           FontSize="12"
+                                                           VerticalOptions="Center" />
+                                                </HorizontalStackLayout>
+                                            </HorizontalStackLayout>
+
+                                            <!-- Amount/Date/Type row + chevron -->
+                                            <Grid Grid.Row="2"
+                                                  Grid.Column="0"
+                                                  Grid.ColumnSpan="2"
+                                                  ColumnDefinitions="*,*,*,Auto"
+                                                  ColumnSpacing="8">
+                                                <VerticalStackLayout Grid.Column="0" Spacing="2">
+                                                    <Label Text="Amount" TextColor="{StaticResource BulletDot}" FontSize="11" />
+                                                    <Label Text="{Binding Amount}"
+                                                           TextColor="{StaticResource BrandNavy}"
+                                                           FontSize="13"
+                                                           FontAttributes="Bold"
+                                                           FontFamily="OpenSansSemibold" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                                    <Label Text="Date" TextColor="{StaticResource BulletDot}" FontSize="11" />
+                                                    <Label Text="{Binding DateString}"
+                                                           TextColor="{StaticResource BrandNavy}"
+                                                           FontSize="13" />
+                                                </VerticalStackLayout>
+                                                <VerticalStackLayout Grid.Column="2" Spacing="2">
+                                                    <Label Text="Type" TextColor="{StaticResource BulletDot}" FontSize="11" />
+                                                    <Label Text="{Binding ProjectType}"
+                                                           TextColor="{StaticResource BrandNavy}"
+                                                           FontSize="13" />
+                                                </VerticalStackLayout>
+                                                <Image Grid.Column="3"
+                                                       Source="icon_chevron_right.png"
+                                                       WidthRequest="18"
+                                                       HeightRequest="18"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Grid>
         </ScrollView>
 
-        <!-- ============================ TAB BAR ============================ -->
+        <!-- ============================================================ -->
+        <!-- TAB BAR (shared)                                               -->
+        <!-- ============================================================ -->
         <Border Grid.Row="2"
                 BackgroundColor="{StaticResource White}"
                 Stroke="#EAECF2"
@@ -316,64 +892,43 @@
                     </VerticalStackLayout>
                 </Border>
 
-                <!-- Projects -->
                 <VerticalStackLayout Grid.Column="1"
                                      Padding="0,8"
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabProjects">
-                    <Image Source="tab_projects.png"
-                           WidthRequest="22"
-                           HeightRequest="22" />
-                    <Label Text="Projects"
-                           TextColor="{StaticResource TabIconMuted}"
-                           FontSize="11"
-                           HorizontalTextAlignment="Center" />
+                    <Image Source="tab_projects.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Projects" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
-                <!-- Invoices -->
                 <VerticalStackLayout Grid.Column="2"
                                      Padding="0,8"
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabInvoices">
-                    <Image Source="tab_invoices.png"
-                           WidthRequest="22"
-                           HeightRequest="22" />
-                    <Label Text="Invoices"
-                           TextColor="{StaticResource TabIconMuted}"
-                           FontSize="11"
-                           HorizontalTextAlignment="Center" />
+                    <Image Source="tab_invoices.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Invoices" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
-                <!-- Reports -->
                 <VerticalStackLayout Grid.Column="3"
                                      Padding="0,8"
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabReports">
-                    <Image Source="tab_reports.png"
-                           WidthRequest="22"
-                           HeightRequest="22" />
-                    <Label Text="Reports"
-                           TextColor="{StaticResource TabIconMuted}"
-                           FontSize="11"
-                           HorizontalTextAlignment="Center" />
+                    <Image Source="tab_reports.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Reports" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
-                <!-- Profile -->
                 <VerticalStackLayout Grid.Column="4"
                                      Padding="0,8"
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabProfile">
-                    <Image Source="tab_profile.png"
-                           WidthRequest="22"
-                           HeightRequest="22" />
-                    <Label Text="Profile"
-                           TextColor="{StaticResource TabIconMuted}"
-                           FontSize="11"
-                           HorizontalTextAlignment="Center" />
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding OpenProfileCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_profile.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Profile" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
 
             </Grid>

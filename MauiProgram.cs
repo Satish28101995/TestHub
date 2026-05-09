@@ -38,6 +38,7 @@ namespace TestHub
             builder.Services.AddTransient<DashboardViewModel>();
             builder.Services.AddTransient<SignatureViewModel>();
             builder.Services.AddTransient<TermsViewModel>();
+            builder.Services.AddTransient<ProfileViewModel>();
 
             // ---------- Pages ----------
             builder.Services.AddTransient<LoginPage>();
@@ -46,6 +47,7 @@ namespace TestHub
             builder.Services.AddTransient<DashboardPage>();
             builder.Services.AddTransient<SignaturePage>();
             builder.Services.AddTransient<TermsPage>();
+            builder.Services.AddTransient<ProfilePage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -11,7 +11,10 @@ public static class AppConfig
     public static class Endpoints
     {
         public const string Login            = "v1/Account/Login";
+        public const string Logout           = "v1/Account/Logout";
         public const string ForgetPassword   = "v1/Account/ForgetPassword";
+        public const string Profile          = "v1/Profile";
+        public const string AccountStatus    = "v1/contractor/account-status";
         public const string GetSignature     = "v1/contractor/signature";
         public const string UpdateSignature  = "v1/contractor/update-signature";
         public const string GetTerms         = "v1/contractor/terms";
