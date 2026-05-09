@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using TestHub.Models.Auth;
+using TestHub.Services;
 
 namespace TestHub.ViewModels;
 
@@ -9,6 +11,8 @@ public sealed class LoginViewModel : BaseViewModel
         @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private readonly IAuthService _auth;
+
     private string _email = string.Empty;
     private string _password = string.Empty;
     private bool _rememberMe;
@@ -16,8 +20,10 @@ public sealed class LoginViewModel : BaseViewModel
     private string _emailError = string.Empty;
     private string _passwordError = string.Empty;
 
-    public LoginViewModel()
+    public LoginViewModel(IAuthService auth)
     {
+        _auth = auth;
+
         SignInCommand = new AsyncRelayCommand(SignInAsync);
         TogglePasswordCommand = new RelayCommand(() => IsPasswordHidden = !IsPasswordHidden);
         ForgotPasswordCommand = new AsyncRelayCommand(GoToForgotPasswordAsync);
@@ -108,12 +114,28 @@ public sealed class LoginViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            // Simulated authentication call. Replace with the real auth service.
-            await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(true);
+
+            var result = await _auth
+                .LoginAsync(Email.Trim(), Password, UserType.Contractor)
+                .ConfigureAwait(true);
+
+            if (!result.IsSuccess)
+            {
+                await DisplayAlertSafeAsync("Sign in failed",
+                    string.IsNullOrWhiteSpace(result.Message)
+                        ? "Could not sign you in. Please try again."
+                        : result.Message,
+                    "OK").ConfigureAwait(true);
+                return;
+            }
+
+            // Tokens are already persisted by AuthService. Reset the
+            // password field before leaving the page.
+            Password = string.Empty;
 
             if (Shell.Current is not null)
             {
-                await Shell.Current.GoToAsync("//home").ConfigureAwait(true);
+                await Shell.Current.GoToAsync("//dashboard").ConfigureAwait(true);
             }
         }
         finally

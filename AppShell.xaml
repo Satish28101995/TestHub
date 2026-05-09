@@ -23,6 +23,15 @@
     <ShellContent Route="signup"
                   ContentTemplate="{DataTemplate views:SignupPage}" />
 
+    <ShellContent Route="dashboard"
+                  ContentTemplate="{DataTemplate views:DashboardPage}" />
+
+    <ShellContent Route="signature"
+                  ContentTemplate="{DataTemplate views:SignaturePage}" />
+
+    <ShellContent Route="terms"
+                  ContentTemplate="{DataTemplate views:TermsPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

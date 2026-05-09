@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.TermsPage"
+             x:DataType="vm:TermsViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource CardBg}">
+
+    <ContentPage.Resources>
+        <Color x:Key="ErrorRed">#DC2626</Color>
+        <Color x:Key="EditorBorder">#D6DAE4</Color>
+        <Color x:Key="HelperText">#94A3B8</Color>
+
+        <Style x:Key="EditorBorderStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+            <Setter Property="Stroke" Value="{StaticResource EditorBorder}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="14" />
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="14,12" />
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- ============================ HEADER ============================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource BrandNavy}"
+                Stroke="Transparent"
+                StrokeThickness="0"
+                Padding="16,18,20,20">
+
+            <VerticalStackLayout Spacing="14">
+                <Grid ColumnDefinitions="Auto,*">
+                    <Border Grid.Column="0"
+                            BackgroundColor="#33FFFFFF"
+                            Stroke="Transparent"
+                            WidthRequest="40"
+                            HeightRequest="40"
+                            Padding="0"
+                            VerticalOptions="Center"
+                            AutomationId="TermsBackButton">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding BackCommand}" />
+                        </Border.GestureRecognizers>
+                        <Image Source="icon_back.png"
+                               WidthRequest="18"
+                               HeightRequest="18"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center" />
+                    </Border>
+
+                    <VerticalStackLayout Grid.Column="1"
+                                         Spacing="2"
+                                         Margin="14,0,0,0"
+                                         VerticalOptions="Center">
+                        <Label Text="Create Account"
+                               TextColor="{StaticResource White}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+                        <Label Text="Step 3 of 3"
+                               TextColor="#C7D2FE"
+                               FontSize="13" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <Grid ColumnDefinitions="*,*,*" ColumnSpacing="8" Margin="0,4,0,0">
+                    <Border Grid.Column="0"
+                            BackgroundColor="{StaticResource BrandGold}"
+                            Stroke="Transparent"
+                            HeightRequest="6">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="3" />
+                        </Border.StrokeShape>
+                    </Border>
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource BrandGold}"
+                            Stroke="Transparent"
+                            HeightRequest="6">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="3" />
+                        </Border.StrokeShape>
+                    </Border>
+                    <Border Grid.Column="2"
+                            BackgroundColor="{StaticResource BrandGold}"
+                            Stroke="Transparent"
+                            HeightRequest="6">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="3" />
+                        </Border.StrokeShape>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ============================ BODY ============================ -->
+        <ScrollView Grid.Row="1">
+            <Grid Padding="16,18,16,16">
+
+                <VerticalStackLayout Spacing="14">
+
+                    <!-- Section title row -->
+                    <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                        <Border BackgroundColor="#FCEDC9"
+                                Stroke="Transparent"
+                                WidthRequest="44"
+                                HeightRequest="44"
+                                Padding="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Image Source="icon_contract.png"
+                                   WidthRequest="22"
+                                   HeightRequest="22"
+                                   HorizontalOptions="Center"
+                                   VerticalOptions="Center" />
+                        </Border>
+                        <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                            <Label Text="Contract Terms"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                            <Label Text="Define your default payment terms"
+                                   TextColor="{StaticResource MutedText}"
+                                   FontSize="13" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <!-- Editor card -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Contract Terms"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+
+                        <Border Style="{StaticResource EditorBorderStyle}">
+                            <Editor x:Name="TermsEditor"
+                                    Text="{Binding TermsAndConditions, Mode=TwoWay}"
+                                    Placeholder="Example:&#10;&#8226; 10% deposit on contract signing&#10;&#8226; 40% on project commencement&#10;&#8226; 40% on project completion&#10;&#8226; 10% on final inspection&#10;&#10;All payments due within 7 days of invoice."
+                                    PlaceholderColor="#94A3B8"
+                                    TextColor="{StaticResource BrandNavy}"
+                                    FontSize="14"
+                                    AutoSize="Disabled"
+                                    HeightRequest="220"
+                                    BackgroundColor="Transparent"
+                                    AutomationId="TermsEditor" />
+                        </Border>
+
+                        <Label Text="{Binding TermsError}"
+                               IsVisible="{Binding HasTermsError}"
+                               TextColor="{StaticResource ErrorRed}"
+                               FontSize="12"
+                               Margin="4,0,0,0" />
+
+                        <Label Text="These terms will be included in all contracts by default. You can edit them for individual projects."
+                               TextColor="{StaticResource HelperText}"
+                               FontSize="12"
+                               LineHeight="1.4"
+                               Margin="2,4,0,0" />
+                    </VerticalStackLayout>
+
+                </VerticalStackLayout>
+            </Grid>
+        </ScrollView>
+
+        <!-- ============================ SUBMIT ============================ -->
+        <Grid Grid.Row="2" Padding="16,8,16,16">
+            <Grid HeightRequest="56">
+                <Button Text="Submit"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Command="{Binding SubmitCommand}"
+                        IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}"
+                        AutomationId="TermsSubmit" />
+
+                <Border BackgroundColor="{StaticResource BrandNavy}"
+                        Stroke="Transparent"
+                        IsVisible="{Binding IsBusy}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                       Color="{StaticResource White}"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                </Border>
+            </Grid>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

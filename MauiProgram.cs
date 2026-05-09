@@ -1,4 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using TestHub.Services;
+using TestHub.ViewModels;
+using TestHub.Views;
 
 namespace TestHub
 {
@@ -15,8 +19,36 @@ namespace TestHub
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
 
+            // ---------- HTTP + services ----------
+            builder.Services.AddSingleton<HttpClient>(_ => new HttpClient
+            {
+                BaseAddress = new Uri(AppConfig.BaseUrl),
+                Timeout = TimeSpan.FromSeconds(30),
+            });
+
+            builder.Services.AddSingleton<ISessionStore, SessionStore>();
+            builder.Services.AddSingleton<IHeaderProvider, HeaderProvider>();
+            builder.Services.AddSingleton<IApiClient, ApiClient>();
+            builder.Services.AddSingleton<IAuthService, AuthService>();
+
+            // ---------- View models ----------
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<ForgotPasswordViewModel>();
+            builder.Services.AddTransient<SignupViewModel>();
+            builder.Services.AddTransient<DashboardViewModel>();
+            builder.Services.AddTransient<SignatureViewModel>();
+            builder.Services.AddTransient<TermsViewModel>();
+
+            // ---------- Pages ----------
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<ForgotPasswordPage>();
+            builder.Services.AddTransient<SignupPage>();
+            builder.Services.AddTransient<DashboardPage>();
+            builder.Services.AddTransient<SignaturePage>();
+            builder.Services.AddTransient<TermsPage>();
+
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

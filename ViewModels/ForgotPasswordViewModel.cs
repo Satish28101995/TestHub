@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Input;
+using TestHub.Models.Auth;
+using TestHub.Services;
 
 namespace TestHub.ViewModels;
 
@@ -9,13 +11,17 @@ public sealed class ForgotPasswordViewModel : BaseViewModel
         @"^[^@\s]+@[^@\s]+\.[^@\s]+$",
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
+    private readonly IApiClient _api;
+
     private string _email = string.Empty;
     private string _emailError = string.Empty;
 
-    public ForgotPasswordViewModel()
+    public ForgotPasswordViewModel(IApiClient api)
     {
+        _api = api;
+
         SubmitCommand = new AsyncRelayCommand(SubmitAsync);
-        BackCommand = new AsyncRelayCommand(GoBackAsync);
+        BackCommand   = new AsyncRelayCommand(GoBackAsync);
     }
 
     public string Email
@@ -58,14 +64,32 @@ public sealed class ForgotPasswordViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            // Simulated reset link request. Wire to your auth backend.
-            await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(true);
 
-            await DisplayAlertSafeAsync(
-                "Check your inbox",
-                $"If an account exists for {Email.Trim()}, a reset link has been sent.",
-                "OK").ConfigureAwait(true);
+            var payload = new ForgetPasswordRequest { Email = Email.Trim() };
 
+            var result = await _api.PostAsync<bool>(
+                AppConfig.Endpoints.ForgetPassword, payload, requireAuth: false)
+                .ConfigureAwait(true);
+
+            if (!result.IsSuccess)
+            {
+                await DisplayAlertSafeAsync(
+                    "Could not send reset link",
+                    string.IsNullOrWhiteSpace(result.Message)
+                        ? "Please try again in a moment."
+                        : result.Message,
+                    "OK").ConfigureAwait(true);
+                return;
+            }
+
+            // Server signals success via { "data": true }. Even when data
+            // is false (e.g. unknown email), we deliberately show a
+            // neutral message so we don't leak which addresses exist.
+            var message = string.IsNullOrWhiteSpace(result.Message)
+                ? $"If an account exists for {Email.Trim()}, a reset link has been sent."
+                : result.Message;
+
+            await DisplayAlertSafeAsync("Check your inbox", message, "OK").ConfigureAwait(true);
             await GoBackAsync().ConfigureAwait(true);
         }
         finally
