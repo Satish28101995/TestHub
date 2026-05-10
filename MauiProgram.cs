@@ -47,6 +47,7 @@ namespace TestHub
             builder.Services.AddTransient<ReportsViewModel>();
             builder.Services.AddTransient<ChangePasswordViewModel>();
             builder.Services.AddTransient<NotificationsViewModel>();
+            builder.Services.AddTransient<CustomerLookupViewModel>();
 
             // ---------- Pages ----------
             builder.Services.AddTransient<LoginPage>();
@@ -63,6 +64,7 @@ namespace TestHub
             builder.Services.AddTransient<ReportsPage>();
             builder.Services.AddTransient<ChangePasswordPage>();
             builder.Services.AddTransient<NotificationsPage>();
+            builder.Services.AddTransient<CustomerLookupPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -56,6 +56,9 @@
     <ShellContent Route="notifications"
                   ContentTemplate="{DataTemplate views:NotificationsPage}" />
 
+    <ShellContent Route="customerlookup"
+                  ContentTemplate="{DataTemplate views:CustomerLookupPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

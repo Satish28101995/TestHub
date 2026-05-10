@@ -56,7 +56,8 @@ public sealed class DashboardViewModel : BaseViewModel
         CompleteActionCommand   = new AsyncRelayCommand(() => Coming("Premium Verification"));
         ViewAllProjectsCommand  = new AsyncRelayCommand(GoToProjectsAsync);
         OpenProfileCommand      = new AsyncRelayCommand(GoToProfileAsync);
-        CustomerLookupCommand   = new AsyncRelayCommand(() => Coming("Customer Lookup"));
+        CustomerLookupCommand   = new AsyncRelayCommand(() =>
+            Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync("//customerlookup"));
 
         RecentProjects = new ObservableCollection<RecentProjectItem>();
     }

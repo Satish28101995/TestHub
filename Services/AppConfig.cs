@@ -29,6 +29,7 @@ public static class AppConfig
         public const string Invoices         = "v1/contractor/contracts/invoices";
         public const string FinancialReports = "v1/contractor/reports/financial";
         public const string Notifications    = "v1/contractor/notifications";
+        public const string CustomerReviews  = "v1/contractor/customer-reviews";
 
         /// <summary>
         /// Returns the URL used to mark a single notification as read.

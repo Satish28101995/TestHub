@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.CustomerLookupPage"
+             x:Name="LookupRoot"
+             x:DataType="vm:CustomerLookupViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="#F5F7FA">
+
+    <ContentPage.Resources>
+        <Color x:Key="MutedText">#94A3B8</Color>
+        <Color x:Key="LabelText">#64748B</Color>
+        <Color x:Key="MessageText">#475569</Color>
+        <Color x:Key="HeaderDivider">#EAECF2</Color>
+        <Color x:Key="CardBorder">#EEF1F6</Color>
+        <Color x:Key="FieldBorder">#E2E8F0</Color>
+        <Color x:Key="StarFilled">#F4C04A</Color>
+        <Color x:Key="StarEmpty">#CBD5E1</Color>
+        <Color x:Key="AvatarBg">#EEF2FF</Color>
+        <Color x:Key="AvatarText">#1F2547</Color>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*"
+          BackgroundColor="#F5F7FA">
+
+        <!-- ============================================================ -->
+        <!-- HEADER: back arrow + title                                     -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="#FFFFFF"
+                Stroke="{StaticResource HeaderDivider}"
+                StrokeThickness="0,0,0,1"
+                Padding="14,40,14,14">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+
+                <Border Grid.Column="0"
+                        BackgroundColor="Transparent"
+                        Stroke="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        VerticalOptions="Center"
+                        AutomationId="CustomerLookupBack">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="icon_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <Label Grid.Column="1"
+                       Text="Customer Lookup"
+                       TextColor="{StaticResource BrandNavy}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold"
+                       VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- BODY                                                           -->
+        <!-- ============================================================ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="16,18,16,40" Spacing="16">
+
+                <!-- ===================== Customer Information card ===================== -->
+                <Border BackgroundColor="#FFFFFF"
+                        Stroke="{StaticResource CardBorder}"
+                        StrokeThickness="1"
+                        Padding="18">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.04" Radius="14" Offset="0,2" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="14">
+                        <!-- Title row with navy avatar chip -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12" VerticalOptions="Center">
+                            <Border Grid.Column="0"
+                                    BackgroundColor="{StaticResource BrandNavy}"
+                                    Stroke="Transparent"
+                                    WidthRequest="44"
+                                    HeightRequest="44"
+                                    Padding="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Image Source="icon_user_badge.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Customer Information"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                                <Label Text="Enter customer details"
+                                       TextColor="{StaticResource LabelText}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Email/Phone field -->
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Email/Phone No."
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                            <Border BackgroundColor="#FFFFFF"
+                                    Stroke="{StaticResource FieldBorder}"
+                                    StrokeThickness="1"
+                                    Padding="14,2">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Entry Placeholder="Email/Phone No."
+                                       PlaceholderColor="{StaticResource MutedText}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       BackgroundColor="Transparent"
+                                       ReturnType="Search"
+                                       Text="{Binding SearchTerm, Mode=TwoWay}"
+                                       ReturnCommand="{Binding SearchCommand}"
+                                       AutomationId="CustomerLookupSearchEntry" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Search button -->
+                        <Border BackgroundColor="{StaticResource BrandNavy}"
+                                Stroke="Transparent"
+                                Padding="0"
+                                IsEnabled="{Binding CanSearch}"
+                                Opacity="{Binding CanSearch, Converter={StaticResource BoolToOpacityConverter}, FallbackValue=1}"
+                                AutomationId="CustomerLookupSearchButton">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SearchCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid HeightRequest="52">
+                                <Label Text="Search"
+                                       TextColor="#FFFFFF"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
+                                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                                   IsVisible="{Binding IsBusy}"
+                                                   Color="#FFFFFF"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ===================== Results card (only after a search) ===================== -->
+                <Border BackgroundColor="#FFFFFF"
+                        Stroke="{StaticResource CardBorder}"
+                        StrokeThickness="1"
+                        Padding="16,16,16,8"
+                        IsVisible="{Binding ShowResults}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.04" Radius="14" Offset="0,2" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="14">
+                        <!-- Reviews & Ratings header -->
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10" VerticalOptions="Center">
+                            <Image Grid.Column="0"
+                                   Source="icon_star_filled.png"
+                                   WidthRequest="22"
+                                   HeightRequest="22"
+                                   VerticalOptions="Center" />
+                            <VerticalStackLayout Grid.Column="1" Spacing="2">
+                                <Label Text="Reviews &amp; Ratings"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Label Text="{Binding SummaryAverageDisplay}"
+                                           TextColor="{StaticResource BrandNavy}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold" />
+                                    <HorizontalStackLayout Spacing="2" VerticalOptions="Center">
+                                        <Image WidthRequest="12" HeightRequest="12">
+                                            <Image.Source>
+                                                <Binding Path="SummaryStar1Filled" Converter="{StaticResource StarSourceConverter}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Image WidthRequest="12" HeightRequest="12">
+                                            <Image.Source>
+                                                <Binding Path="SummaryStar2Filled" Converter="{StaticResource StarSourceConverter}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Image WidthRequest="12" HeightRequest="12">
+                                            <Image.Source>
+                                                <Binding Path="SummaryStar3Filled" Converter="{StaticResource StarSourceConverter}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Image WidthRequest="12" HeightRequest="12">
+                                            <Image.Source>
+                                                <Binding Path="SummaryStar4Filled" Converter="{StaticResource StarSourceConverter}" />
+                                            </Image.Source>
+                                        </Image>
+                                        <Image WidthRequest="12" HeightRequest="12">
+                                            <Image.Source>
+                                                <Binding Path="SummaryStar5Filled" Converter="{StaticResource StarSourceConverter}" />
+                                            </Image.Source>
+                                        </Image>
+                                    </HorizontalStackLayout>
+                                    <Label Text="{Binding SummaryReviewsLabel}"
+                                           TextColor="{StaticResource LabelText}"
+                                           FontSize="12"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Review rows -->
+                        <CollectionView ItemsSource="{Binding Items}"
+                                        SelectionMode="None"
+                                        RemainingItemsThreshold="3"
+                                        RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+                            <CollectionView.ItemsLayout>
+                                <LinearItemsLayout Orientation="Vertical" ItemSpacing="14" />
+                            </CollectionView.ItemsLayout>
+                            <CollectionView.ItemTemplate>
+                                <DataTemplate x:DataType="vm:CustomerReviewItemViewModel">
+                                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+
+                                        <!-- Avatar (initials chip — image fallback omitted for now) -->
+                                        <Grid Grid.Column="0"
+                                              WidthRequest="40"
+                                              HeightRequest="40"
+                                              VerticalOptions="Start">
+                                            <Border BackgroundColor="{StaticResource AvatarBg}"
+                                                    Stroke="Transparent"
+                                                    StrokeThickness="0">
+                                                <Border.StrokeShape>
+                                                    <RoundRectangle CornerRadius="20" />
+                                                </Border.StrokeShape>
+                                                <Label Text="{Binding Initials}"
+                                                       TextColor="{StaticResource AvatarText}"
+                                                       FontSize="14"
+                                                       FontAttributes="Bold"
+                                                       FontFamily="OpenSansSemibold"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center" />
+                                            </Border>
+                                        </Grid>
+
+                                        <!-- Content -->
+                                        <VerticalStackLayout Grid.Column="1" Spacing="6">
+
+                                            <!-- Name -->
+                                            <Label Text="{Binding CustomerName}"
+                                                   TextColor="{StaticResource BrandNavy}"
+                                                   FontSize="14"
+                                                   FontAttributes="Bold"
+                                                   FontFamily="OpenSansSemibold" />
+
+                                            <!-- Stars + numeric + date -->
+                                            <Grid ColumnDefinitions="Auto,Auto,*,Auto"
+                                                  ColumnSpacing="8"
+                                                  VerticalOptions="Center">
+
+                                                <HorizontalStackLayout Grid.Column="0"
+                                                                       Spacing="2"
+                                                                       VerticalOptions="Center">
+                                                    <Image WidthRequest="12" HeightRequest="12">
+                                                        <Image.Source>
+                                                            <Binding Path="Star1Filled" Converter="{StaticResource StarSourceConverter}" />
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <Image WidthRequest="12" HeightRequest="12">
+                                                        <Image.Source>
+                                                            <Binding Path="Star2Filled" Converter="{StaticResource StarSourceConverter}" />
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <Image WidthRequest="12" HeightRequest="12">
+                                                        <Image.Source>
+                                                            <Binding Path="Star3Filled" Converter="{StaticResource StarSourceConverter}" />
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <Image WidthRequest="12" HeightRequest="12">
+                                                        <Image.Source>
+                                                            <Binding Path="Star4Filled" Converter="{StaticResource StarSourceConverter}" />
+                                                        </Image.Source>
+                                                    </Image>
+                                                    <Image WidthRequest="12" HeightRequest="12">
+                                                        <Image.Source>
+                                                            <Binding Path="Star5Filled" Converter="{StaticResource StarSourceConverter}" />
+                                                        </Image.Source>
+                                                    </Image>
+                                                </HorizontalStackLayout>
+
+                                                <Label Grid.Column="1"
+                                                       Text="{Binding RatingDisplay}"
+                                                       TextColor="{StaticResource BrandNavy}"
+                                                       FontSize="12"
+                                                       FontAttributes="Bold"
+                                                       FontFamily="OpenSansSemibold"
+                                                       VerticalOptions="Center" />
+
+                                                <Label Grid.Column="3"
+                                                       Text="{Binding DateDisplay}"
+                                                       TextColor="{StaticResource MutedText}"
+                                                       FontSize="12"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+
+                                            <Label Text="{Binding Notes}"
+                                                   TextColor="{StaticResource MessageText}"
+                                                   FontSize="13"
+                                                   LineHeight="1.4" />
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </DataTemplate>
+                            </CollectionView.ItemTemplate>
+
+                            <CollectionView.Footer>
+                                <VerticalStackLayout Padding="0,8,0,0">
+                                    <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                                       IsVisible="{Binding IsLoadingMore}"
+                                                       Color="{StaticResource BrandGold}"
+                                                       HorizontalOptions="Center" />
+                                </VerticalStackLayout>
+                            </CollectionView.Footer>
+                        </CollectionView>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ===================== Empty state (no results) ===================== -->
+                <Border BackgroundColor="#FFFFFF"
+                        Stroke="{StaticResource CardBorder}"
+                        StrokeThickness="1"
+                        Padding="24,28"
+                        IsVisible="{Binding ShowEmpty}">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                        <Image Source="icon_search.png"
+                               WidthRequest="40"
+                               HeightRequest="40"
+                               Opacity="0.5"
+                               HorizontalOptions="Center" />
+                        <Label Text="No customers found"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Try a different email, phone, or name."
+                               TextColor="{StaticResource MutedText}"
+                               FontSize="12"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

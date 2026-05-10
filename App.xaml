@@ -14,6 +14,8 @@
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
             <converters:WidthMultiplyConverter x:Key="WidthMultiplyConverter" />
             <converters:FractionToColumnsConverter x:Key="FractionToColumnsConverter" />
+            <converters:BoolToOpacityConverter x:Key="BoolToOpacityConverter" />
+            <converters:StarSourceConverter x:Key="StarSourceConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

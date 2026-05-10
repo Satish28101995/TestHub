@@ -8,43 +8,40 @@
              Shell.NavBarIsVisible="False"
              Shell.FlyoutBehavior="Disabled"
              Shell.TabBarIsVisible="False"
-             BackgroundColor="{StaticResource White}">
+             BackgroundColor="#FFFFFF">
 
     <ContentPage.Resources>
         <Color x:Key="MutedText">#94A3B8</Color>
         <Color x:Key="LabelText">#64748B</Color>
         <Color x:Key="MessageText">#475569</Color>
-        <Color x:Key="HeaderDivider">#EAECF2</Color>
+        <Color x:Key="HeaderDivider">#EFF1F4</Color>
         <Color x:Key="CardBorder">#EEF1F6</Color>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*"
+          BackgroundColor="#FFFFFF">
 
         <!-- ============================================================ -->
-        <!-- HEADER (white bar with pill back button + title + bell)        -->
+        <!-- HEADER (white bar with back arrow pill + title)                -->
+        <!-- Mirrors ChangePasswordPage's header so the back arrow renders  -->
+        <!-- the same way it does on every other page in the app.           -->
         <!-- ============================================================ -->
-        <Grid Grid.Row="0"
-              BackgroundColor="{StaticResource White}"
-              RowDefinitions="*,Auto"
-              Padding="0">
-            <Grid Grid.Row="0"
-                  ColumnDefinitions="Auto,*,Auto"
-                  ColumnSpacing="12"
-                  Padding="16,40,16,14"
-                  VerticalOptions="Center">
+        <Border Grid.Row="0"
+                BackgroundColor="#FFFFFF"
+                Stroke="#EAECF2"
+                StrokeThickness="0,0,0,1"
+                Padding="14,40,14,14">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
 
-                <!-- Back button (rounded light-gray pill) -->
+                <!-- Back arrow tap target -->
                 <Border Grid.Column="0"
-                        BackgroundColor="#F1F4F9"
+                        BackgroundColor="Transparent"
                         Stroke="Transparent"
-                        StrokeThickness="0"
                         WidthRequest="40"
                         HeightRequest="40"
                         Padding="0"
+                        VerticalOptions="Center"
                         AutomationId="NotificationsBack">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="12" />
-                    </Border.StrokeShape>
                     <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding BackCommand}" />
                     </Border.GestureRecognizers>
@@ -62,32 +59,8 @@
                        FontAttributes="Bold"
                        FontFamily="OpenSansSemibold"
                        VerticalOptions="Center" />
-
-                <!-- Notification bell trailing icon -->
-                <Border Grid.Column="2"
-                        BackgroundColor="#F1F4F9"
-                        Stroke="Transparent"
-                        StrokeThickness="0"
-                        WidthRequest="40"
-                        HeightRequest="40"
-                        Padding="0"
-                        AutomationId="NotificationsBell">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="12" />
-                    </Border.StrokeShape>
-                    <Image Source="icon_bell.png"
-                           WidthRequest="20"
-                           HeightRequest="20"
-                           HorizontalOptions="Center"
-                           VerticalOptions="Center" />
-                </Border>
             </Grid>
-
-            <!-- Hairline bottom divider -->
-            <BoxView Grid.Row="1"
-                     HeightRequest="1"
-                     Color="{StaticResource HeaderDivider}" />
-        </Grid>
+        </Border>
 
         <!-- ============================================================ -->
         <!-- LIST                                                           -->
@@ -97,17 +70,23 @@
                      Command="{Binding RefreshCommand}">
             <CollectionView ItemsSource="{Binding Items}"
                             SelectionMode="None"
+                            BackgroundColor="#FFFFFF"
                             RemainingItemsThreshold="3"
                             RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
 
                 <CollectionView.ItemsLayout>
-                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
                 </CollectionView.ItemsLayout>
+
+                <!-- ===================== HEADER (top spacer) ===================== -->
+                <CollectionView.Header>
+                    <BoxView HeightRequest="16" BackgroundColor="#FFFFFF" Color="#FFFFFF" />
+                </CollectionView.Header>
 
                 <!-- ===================== ITEM TEMPLATE ===================== -->
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="vm:NotificationItemViewModel">
-                        <Border BackgroundColor="{StaticResource White}"
+                        <Border BackgroundColor="#FFFFFF"
                                 Stroke="{StaticResource CardBorder}"
                                 StrokeThickness="1"
                                 Padding="0"
@@ -115,6 +94,12 @@
                             <Border.StrokeShape>
                                 <RoundRectangle CornerRadius="12" />
                             </Border.StrokeShape>
+                            <Border.Shadow>
+                                <Shadow Brush="Black"
+                                        Opacity="0.05"
+                                        Radius="10"
+                                        Offset="0,2" />
+                            </Border.Shadow>
                             <Border.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Command="{Binding BindingContext.OpenCommand, Source={x:Reference NotificationsRoot}}"
@@ -125,6 +110,7 @@
                                 <!-- Gold left-edge accent stripe (unread) / transparent (read) -->
                                 <BoxView Grid.Column="0"
                                          Color="{Binding AccentColor}"
+                                         BackgroundColor="{Binding AccentColor}"
                                          HorizontalOptions="Fill"
                                          VerticalOptions="Fill" />
 
@@ -135,7 +121,7 @@
 
                                     <!-- Title row + time-ago -->
                                     <Grid ColumnDefinitions="Auto,*,Auto"
-                                          ColumnSpacing="6"
+                                          ColumnSpacing="8"
                                           VerticalOptions="Center">
 
                                         <!-- Bullet dot (only when unread) -->
@@ -172,14 +158,9 @@
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
 
-                <!-- ===================== HEADER (small top spacer) ===================== -->
-                <CollectionView.Header>
-                    <BoxView HeightRequest="14" Color="Transparent" />
-                </CollectionView.Header>
-
                 <!-- ===================== FOOTER (load-more spinner) ===================== -->
                 <CollectionView.Footer>
-                    <VerticalStackLayout Padding="16,12,16,40" Spacing="8">
+                    <VerticalStackLayout Padding="16,12,16,40" Spacing="8" BackgroundColor="#FFFFFF">
                         <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
                                            IsVisible="{Binding IsLoadingMore}"
                                            Color="{StaticResource BrandGold}"
@@ -189,7 +170,7 @@
 
                 <!-- ===================== EMPTY STATE ===================== -->
                 <CollectionView.EmptyView>
-                    <Grid Padding="24,60">
+                    <Grid Padding="24,60" BackgroundColor="#FFFFFF">
                         <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
                             <Image Source="icon_bell.png"
                                    WidthRequest="56"
