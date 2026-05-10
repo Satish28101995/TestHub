@@ -264,14 +264,20 @@ public sealed class SignupViewModel : BaseViewModel
         {
             IsBusy = true;
             // Simulated registration / send-verification call.
+            // Replace with the real signup endpoint once it lands —
+            // the OTP page will then sit at the end of that response.
             await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(true);
 
-            await DisplayAlertSafeAsync(
-                "Verification email sent",
-                $"We have sent a verification link to {Email.Trim()}.",
-                "OK").ConfigureAwait(true);
-
-            await GoToLoginAsync().ConfigureAwait(true);
+            // Hand the user off to the OTP page. The email travels via
+            // a Shell route query param so the next VM can call
+            // /v1/Account/Email/VerifyOtp without us touching it.
+            if (Shell.Current is not null)
+            {
+                var encoded = Uri.EscapeDataString(Email.Trim());
+                await Shell.Current
+                    .GoToAsync($"//otp?email={encoded}")
+                    .ConfigureAwait(true);
+            }
         }
         finally
         {

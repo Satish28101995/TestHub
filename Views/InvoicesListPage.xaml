@@ -29,6 +29,8 @@
 
         <!-- ============================================================ -->
         <!-- HEADER (navy with Total Invoices / Total Paid + Create)        -->
+        <!-- Flat bottom edge to match the rest of the app's secondary      -->
+        <!-- pages (dashboard, projects).                                   -->
         <!-- ============================================================ -->
         <Border Grid.Row="0"
                 BackgroundColor="{StaticResource BrandNavy}"
@@ -36,7 +38,7 @@
                 StrokeThickness="0"
                 Padding="20,28,20,22">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="0,0,28,28" />
+                <RoundRectangle CornerRadius="0" />
             </Border.StrokeShape>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -59,11 +61,11 @@
                     <Border Grid.Column="1"
                             BackgroundColor="{StaticResource BrandGold}"
                             Stroke="Transparent"
-                            Padding="14,8"
+                            Padding="14,7"
                             VerticalOptions="Center"
                             AutomationId="InvoicesCreateButton">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="999" />
+                            <RoundRectangle CornerRadius="14" />
                         </Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding CreateCommand}" />
@@ -71,7 +73,7 @@
                         <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
                             <Label Text="+"
                                    TextColor="{StaticResource White}"
-                                   FontSize="16"
+                                   FontSize="15"
                                    FontAttributes="Bold"
                                    FontFamily="OpenSansSemibold"
                                    VerticalOptions="Center" />
@@ -91,9 +93,9 @@
                             BackgroundColor="{StaticResource HeaderStatBg}"
                             Stroke="#3A4078"
                             StrokeThickness="1"
-                            Padding="14">
+                            Padding="14,12">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="14" />
+                            <RoundRectangle CornerRadius="16" />
                         </Border.StrokeShape>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Total Invoices"
@@ -102,7 +104,7 @@
                                    FontFamily="OpenSansSemibold" />
                             <Label Text="{Binding TotalInvoices}"
                                    TextColor="{StaticResource White}"
-                                   FontSize="24"
+                                   FontSize="22"
                                    FontAttributes="Bold"
                                    FontFamily="OpenSansSemibold" />
                         </VerticalStackLayout>
@@ -112,9 +114,9 @@
                             BackgroundColor="{StaticResource HeaderStatBg}"
                             Stroke="#3A4078"
                             StrokeThickness="1"
-                            Padding="14">
+                            Padding="14,12">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="14" />
+                            <RoundRectangle CornerRadius="16" />
                         </Border.StrokeShape>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="Total Paid"
@@ -123,7 +125,7 @@
                                    FontFamily="OpenSansSemibold" />
                             <Label Text="{Binding TotalPaidDisplay}"
                                    TextColor="{StaticResource White}"
-                                   FontSize="24"
+                                   FontSize="22"
                                    FontAttributes="Bold"
                                    FontFamily="OpenSansSemibold" />
                         </VerticalStackLayout>
@@ -151,21 +153,14 @@
                 <CollectionView.Header>
                     <VerticalStackLayout Padding="16,18,16,4" Spacing="14">
 
-                        <!-- Search + filter chips card -->
-                        <Border BackgroundColor="{StaticResource White}"
-                                Stroke="#EAECF2"
-                                StrokeThickness="1"
-                                Padding="14">
-                            <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="14" />
-                            </Border.StrokeShape>
-
-                            <VerticalStackLayout Spacing="12">
+                        <!-- Search + chips sit directly on the page surface to
+                             match the design — no wrapping card border. -->
+                        <VerticalStackLayout Spacing="14">
                                 <!-- Search input -->
                                 <Border BackgroundColor="{StaticResource White}"
                                         Stroke="{StaticResource ChipBorder}"
                                         StrokeThickness="1"
-                                        Padding="14,10">
+                                        Padding="16,12">
                                     <Border.StrokeShape>
                                         <RoundRectangle CornerRadius="999" />
                                     </Border.StrokeShape>
@@ -295,8 +290,7 @@
                                         </Label>
                                     </Border>
                                 </HorizontalStackLayout>
-                            </VerticalStackLayout>
-                        </Border>
+                        </VerticalStackLayout>
 
                         <!-- Outstanding banner (shown only when summary has outstanding) -->
                         <Border BackgroundColor="{StaticResource OutstandingBg}"

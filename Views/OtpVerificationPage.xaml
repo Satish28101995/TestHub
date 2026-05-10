@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.OtpVerificationPage"
+             x:Name="OtpRoot"
+             x:DataType="vm:OtpVerificationViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False">
+
+    <ContentPage.Resources>
+        <Color x:Key="SubtleText">#94A3B8</Color>
+        <Color x:Key="LabelText">#64748B</Color>
+        <Color x:Key="FieldBorder">#E2E8F0</Color>
+        <Color x:Key="FieldBg">#FFFFFF</Color>
+        <Color x:Key="ErrorText">#DC2626</Color>
+        <Color x:Key="StatusText">#059669</Color>
+
+        <Style x:Key="OtpEntryStyle" TargetType="Entry">
+            <Setter Property="Keyboard" Value="Numeric" />
+            <Setter Property="MaxLength" Value="1" />
+            <Setter Property="HorizontalTextAlignment" Value="Center" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="HorizontalOptions" Value="Fill" />
+            <Setter Property="BackgroundColor" Value="Transparent" />
+            <Setter Property="TextColor" Value="{StaticResource BrandNavy}" />
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontAttributes" Value="Bold" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <Style x:Key="OtpFieldBorderStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource FieldBg}" />
+            <Setter Property="Stroke" Value="{StaticResource FieldBorder}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HeightRequest" Value="56" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="12" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid>
+        <!-- ============================================================ -->
+        <!-- BACKGROUND (navy gradient — same identity as login page)       -->
+        <!-- ============================================================ -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                <GradientStop Color="{StaticResource BrandNavyLight}" Offset="0.0" />
+                <GradientStop Color="{StaticResource BrandNavy}"      Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <ScrollView>
+            <Grid Padding="20,40,20,40"
+                  RowDefinitions="Auto,Auto,Auto"
+                  RowSpacing="0">
+
+                <!-- Top bar: back arrow only -->
+                <Border Grid.Row="0"
+                        BackgroundColor="#33FFFFFF"
+                        Stroke="Transparent"
+                        StrokeThickness="0"
+                        WidthRequest="44"
+                        HeightRequest="44"
+                        Padding="0"
+                        HorizontalOptions="Start"
+                        AutomationId="OtpBack">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="22" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="icon_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <!-- Brand logo -->
+                <Image Grid.Row="1"
+                       Source="logo_testhub.png"
+                       WidthRequest="96"
+                       HeightRequest="96"
+                       Aspect="AspectFit"
+                       HorizontalOptions="Center"
+                       Margin="0,40,0,20" />
+
+                <!-- ============================================================ -->
+                <!-- White card                                                     -->
+                <!-- ============================================================ -->
+                <Border Grid.Row="2"
+                        BackgroundColor="#FFFFFF"
+                        Stroke="Transparent"
+                        StrokeThickness="0"
+                        Padding="22,26,22,22">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20" />
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Opacity="0.15" Radius="24" Offset="0,8" />
+                    </Border.Shadow>
+
+                    <VerticalStackLayout Spacing="18">
+
+                        <!-- Title + subtitle -->
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="OTP Verification"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="22"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                            <Label Text="{Binding SubtitleText}"
+                                   TextColor="{StaticResource LabelText}"
+                                   FontSize="13" />
+                        </VerticalStackLayout>
+
+                        <!-- OTP label + 4 boxes -->
+                        <VerticalStackLayout Spacing="10">
+                            <Label Text="OTP"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+
+                            <Grid ColumnDefinitions="*,*,*,*"
+                                  ColumnSpacing="12">
+                                <Border Grid.Column="0" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry1"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit1, Mode=TwoWay}"
+                                           TextChanged="OnDigit1Changed"
+                                           AutomationId="OtpDigit1" />
+                                </Border>
+                                <Border Grid.Column="1" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry2"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit2, Mode=TwoWay}"
+                                           TextChanged="OnDigit2Changed"
+                                           AutomationId="OtpDigit2" />
+                                </Border>
+                                <Border Grid.Column="2" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry3"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit3, Mode=TwoWay}"
+                                           TextChanged="OnDigit3Changed"
+                                           AutomationId="OtpDigit3" />
+                                </Border>
+                                <Border Grid.Column="3" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry4"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit4, Mode=TwoWay}"
+                                           TextChanged="OnDigit4Changed"
+                                           AutomationId="OtpDigit4" />
+                                </Border>
+                            </Grid>
+                        </VerticalStackLayout>
+
+                        <!-- Inline error / status messages -->
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="{StaticResource ErrorText}"
+                               FontSize="12"
+                               IsVisible="{Binding HasError}" />
+                        <Label Text="{Binding StatusMessage}"
+                               TextColor="{StaticResource StatusText}"
+                               FontSize="12"
+                               IsVisible="{Binding HasStatus}" />
+
+                        <!-- Resend row -->
+                        <HorizontalStackLayout HorizontalOptions="Center"
+                                               Spacing="6"
+                                               VerticalOptions="Center">
+                            <Label Text="Didn`t receive OTP?"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="13"
+                                   VerticalOptions="Center" />
+                            <Label Text="Resend Code"
+                                   TextColor="{StaticResource BrandGold}"
+                                   FontSize="13"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   TextDecorations="Underline"
+                                   VerticalOptions="Center"
+                                   AutomationId="OtpResend">
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ResendCommand}" />
+                                </Label.GestureRecognizers>
+                            </Label>
+                            <ActivityIndicator IsRunning="{Binding IsResending}"
+                                               IsVisible="{Binding IsResending}"
+                                               WidthRequest="14"
+                                               HeightRequest="14"
+                                               Color="{StaticResource BrandGold}"
+                                               VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+
+                        <!-- Submit button -->
+                        <Border BackgroundColor="{StaticResource BrandNavy}"
+                                Stroke="Transparent"
+                                Padding="0"
+                                AutomationId="OtpSubmit">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding SubmitCommand}" />
+                            </Border.GestureRecognizers>
+                            <Grid HeightRequest="52">
+                                <Label Text="Submit"
+                                       TextColor="#FFFFFF"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center"
+                                       IsVisible="{Binding IsBusy, Converter={StaticResource InverseBoolConverter}}" />
+                                <ActivityIndicator IsRunning="{Binding IsBusy}"
+                                                   IsVisible="{Binding IsBusy}"
+                                                   Color="#FFFFFF"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+
+                    </VerticalStackLayout>
+                </Border>
+            </Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>

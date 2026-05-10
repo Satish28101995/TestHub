@@ -59,6 +59,9 @@
     <ShellContent Route="customerlookup"
                   ContentTemplate="{DataTemplate views:CustomerLookupPage}" />
 
+    <ShellContent Route="otp"
+                  ContentTemplate="{DataTemplate views:OtpVerificationPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

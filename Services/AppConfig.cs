@@ -14,6 +14,8 @@ public static class AppConfig
         public const string Logout           = "v1/Account/Logout";
         public const string ForgetPassword   = "v1/Account/ForgetPassword";
         public const string ChangePassword   = "v1/Account/ChangePassword";
+        public const string VerifyOtp        = "v1/Account/Email/VerifyOtp";
+        public const string ResendOtp        = "v1/Account/Email/Verify/Resend";
         public const string Profile          = "v1/Profile";
         public const string AccountStatus    = "v1/contractor/account-status";
         public const string GetSignature     = "v1/contractor/signature";

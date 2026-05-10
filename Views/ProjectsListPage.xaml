@@ -36,14 +36,14 @@
 
                 <!-- ===================== HEADER (navy title + search bar) ===================== -->
                 <CollectionView.Header>
-                    <VerticalStackLayout Spacing="14">
-                        <!-- Navy header — scrolls with content (no longer sticky) -->
+                    <VerticalStackLayout Spacing="0">
+                        <!-- Navy header — flat bottom edge, scrolls with content -->
                         <Border BackgroundColor="{StaticResource BrandNavy}"
                                 Stroke="Transparent"
                                 StrokeThickness="0"
                                 Padding="24,40,24,28">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="0,0,28,28" />
+                                <RoundRectangle CornerRadius="0" />
                             </Border.StrokeShape>
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -54,29 +54,29 @@
 
                             <Label Text="Projects"
                                    TextColor="{StaticResource White}"
-                                   FontSize="28"
+                                   FontSize="26"
                                    FontAttributes="Bold"
                                    FontFamily="OpenSansSemibold"
                                    VerticalOptions="Center" />
                         </Border>
 
-                        <!-- Search bar -->
+                        <!-- Search bar — sits flush below the navy on a white surface -->
                         <Border BackgroundColor="{StaticResource White}"
-                                Stroke="#EAECF2"
+                                Stroke="#E5E7EB"
                                 StrokeThickness="1"
                                 Padding="16,12"
-                                Margin="16,4,16,0">
+                                Margin="16,16,16,4">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="14" />
+                                <RoundRectangle CornerRadius="12" />
                             </Border.StrokeShape>
                             <Grid ColumnDefinitions="Auto,*" ColumnSpacing="10">
                                 <Image Grid.Column="0"
                                        Source="icon_search.png"
-                                       WidthRequest="18"
-                                       HeightRequest="18"
+                                       WidthRequest="16"
+                                       HeightRequest="16"
                                        VerticalOptions="Center" />
                                 <Entry Grid.Column="1"
-                                       Placeholder="Search projects"
+                                       Placeholder="Search projects..."
                                        PlaceholderColor="{StaticResource MutedText}"
                                        TextColor="{StaticResource BrandNavy}"
                                        FontSize="14"

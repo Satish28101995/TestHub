@@ -31,6 +31,7 @@ namespace TestHub
             builder.Services.AddSingleton<IApiClient, ApiClient>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
             builder.Services.AddSingleton<IRememberedAccountStore, RememberedAccountStore>();
+            builder.Services.AddSingleton<IDeviceTokenProvider, DeviceTokenProvider>();
 
             // ---------- View models ----------
             builder.Services.AddTransient<LoginViewModel>();
@@ -48,6 +49,7 @@ namespace TestHub
             builder.Services.AddTransient<ChangePasswordViewModel>();
             builder.Services.AddTransient<NotificationsViewModel>();
             builder.Services.AddTransient<CustomerLookupViewModel>();
+            builder.Services.AddTransient<OtpVerificationViewModel>();
 
             // ---------- Pages ----------
             builder.Services.AddTransient<LoginPage>();
@@ -65,6 +67,7 @@ namespace TestHub
             builder.Services.AddTransient<ChangePasswordPage>();
             builder.Services.AddTransient<NotificationsPage>();
             builder.Services.AddTransient<CustomerLookupPage>();
+            builder.Services.AddTransient<OtpVerificationPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();
