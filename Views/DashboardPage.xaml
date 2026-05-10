@@ -18,7 +18,7 @@
         <Color x:Key="NotifDot">#EF4444</Color>
         <Color x:Key="StatCardBg">#262C54</Color>
         <Color x:Key="StatTrendGreen">#34D399</Color>
-        <Color x:Key="StatTrendCream">#F4C04A</Color>
+        <Color x:Key="StatTrendCream">#818CF8</Color>
         <Color x:Key="ActionRequiredBg">#FEF3C7</Color>
         <Color x:Key="ActionRequiredBorder">#F59E0B</Color>
         <Color x:Key="ProjectCardBorder">#EAECF2</Color>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!--
+	  aps-environment toggles the APNs (Apple Push Notification service)
+	  endpoint the OS uses for this build. Apple requires this entitlement
+	  to be present for any app that registers for remote notifications,
+	  and it must agree with the provisioning profile signing the build.
+
+	  - "development" — sandbox APNs; matches debug builds installed via
+	    Xcode / dotnet build / TestFlight Internal builds.
+	  - "production"  — production APNs; required for App Store and
+	    TestFlight External builds. Flip this string before archiving.
+	-->
+	<key>aps-environment</key>
+	<string>development</string>
+</dict>
+</plist>

@@ -25,7 +25,9 @@
             <Setter Property="HorizontalOptions" Value="Fill" />
             <Setter Property="BackgroundColor" Value="Transparent" />
             <Setter Property="TextColor" Value="{StaticResource BrandNavy}" />
-            <Setter Property="FontSize" Value="20" />
+            <!-- Font/box sizes tuned so 6 boxes fit comfortably on a 360dp
+                 phone (Galaxy A-class baseline) without overflowing. -->
+            <Setter Property="FontSize" Value="18" />
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
         </Style>
@@ -35,7 +37,7 @@
             <Setter Property="Stroke" Value="{StaticResource FieldBorder}" />
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="Padding" Value="0" />
-            <Setter Property="HeightRequest" Value="56" />
+            <Setter Property="HeightRequest" Value="52" />
             <Setter Property="StrokeShape">
                 <Setter.Value>
                     <RoundRectangle CornerRadius="12" />
@@ -121,7 +123,7 @@
                                    FontSize="13" />
                         </VerticalStackLayout>
 
-                        <!-- OTP label + 4 boxes -->
+                        <!-- OTP label + 6 boxes -->
                         <VerticalStackLayout Spacing="10">
                             <Label Text="OTP"
                                    TextColor="{StaticResource BrandNavy}"
@@ -129,8 +131,8 @@
                                    FontAttributes="Bold"
                                    FontFamily="OpenSansSemibold" />
 
-                            <Grid ColumnDefinitions="*,*,*,*"
-                                  ColumnSpacing="12">
+                            <Grid ColumnDefinitions="*,*,*,*,*,*"
+                                  ColumnSpacing="8">
                                 <Border Grid.Column="0" Style="{StaticResource OtpFieldBorderStyle}">
                                     <Entry x:Name="OtpEntry1"
                                            Style="{StaticResource OtpEntryStyle}"
@@ -158,6 +160,20 @@
                                            Text="{Binding Digit4, Mode=TwoWay}"
                                            TextChanged="OnDigit4Changed"
                                            AutomationId="OtpDigit4" />
+                                </Border>
+                                <Border Grid.Column="4" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry5"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit5, Mode=TwoWay}"
+                                           TextChanged="OnDigit5Changed"
+                                           AutomationId="OtpDigit5" />
+                                </Border>
+                                <Border Grid.Column="5" Style="{StaticResource OtpFieldBorderStyle}">
+                                    <Entry x:Name="OtpEntry6"
+                                           Style="{StaticResource OtpEntryStyle}"
+                                           Text="{Binding Digit6, Mode=TwoWay}"
+                                           TextChanged="OnDigit6Changed"
+                                           AutomationId="OtpDigit6" />
                                 </Border>
                             </Grid>
                         </VerticalStackLayout>

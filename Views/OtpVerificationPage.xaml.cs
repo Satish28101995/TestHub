@@ -32,7 +32,13 @@ public partial class OtpVerificationPage : ContentPage
         => HandleDigitChanged(e.NewTextValue, e.OldTextValue, OtpEntry3, OtpEntry4, previous: OtpEntry2);
 
     private void OnDigit4Changed(object? sender, TextChangedEventArgs e)
-        => HandleDigitChanged(e.NewTextValue, e.OldTextValue, OtpEntry4, next: null, previous: OtpEntry3);
+        => HandleDigitChanged(e.NewTextValue, e.OldTextValue, OtpEntry4, OtpEntry5, previous: OtpEntry3);
+
+    private void OnDigit5Changed(object? sender, TextChangedEventArgs e)
+        => HandleDigitChanged(e.NewTextValue, e.OldTextValue, OtpEntry5, OtpEntry6, previous: OtpEntry4);
+
+    private void OnDigit6Changed(object? sender, TextChangedEventArgs e)
+        => HandleDigitChanged(e.NewTextValue, e.OldTextValue, OtpEntry6, next: null, previous: OtpEntry5);
 
     /// <summary>
     /// Centralises the focus-shifting rules:
@@ -71,14 +77,14 @@ public partial class OtpVerificationPage : ContentPage
     }
 
     /// <summary>
-    /// Walks the four entries from <paramref name="startEntry"/> onwards
+    /// Walks the six entries from <paramref name="startEntry"/> onwards
     /// and writes one digit per box, skipping non-numeric characters.
     /// Triggered when the platform delivers a >1-character TextChanged
     /// event (i.e. a clipboard paste).
     /// </summary>
     private void DistributePastedDigits(string text, Entry startEntry)
     {
-        var entries = new[] { OtpEntry1, OtpEntry2, OtpEntry3, OtpEntry4 };
+        var entries = new[] { OtpEntry1, OtpEntry2, OtpEntry3, OtpEntry4, OtpEntry5, OtpEntry6 };
         var startIndex = Array.IndexOf(entries, startEntry);
         if (startIndex < 0)
         {
@@ -103,7 +109,7 @@ public partial class OtpVerificationPage : ContentPage
         }
 
         // Park the cursor on the next empty slot (or the last box if
-        // the paste was a complete 4-digit code).
+        // the paste was a complete 6-digit code).
         var landing = Math.Min(index, entries.Length - 1);
         entries[landing].Focus();
     }

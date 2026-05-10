@@ -280,13 +280,21 @@
                                 </Border>
                             </VerticalStackLayout>
 
-                            <!-- Phone -->
+                            <!-- Phone (required, exactly 10 digits, numeric-only keypad) -->
                             <VerticalStackLayout Spacing="6">
-                                <Label Text="Phone" Style="{StaticResource FieldLabelStyle}" />
+                                <Label Style="{StaticResource FieldLabelStyle}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Phone " />
+                                            <Span Text="*" TextColor="{StaticResource ErrorRed}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
                                 <Border Style="{StaticResource InputBorderStyle}">
                                     <Entry Style="{StaticResource InputEntryStyle}"
-                                           Placeholder="0400 000 000"
-                                           Keyboard="Telephone"
+                                           Placeholder="10-digit mobile (e.g. 0400000000)"
+                                           Keyboard="Numeric"
+                                           MaxLength="10"
                                            Text="{Binding Phone, Mode=TwoWay}"
                                            AutomationId="SignupPhone" />
                                 </Border>
@@ -412,14 +420,69 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- ABN / ACN / License -->
+                    <!-- ABN / ACN / Licence -->
                     <Border Style="{StaticResource SectionCardStyle}">
-                        <VerticalStackLayout Spacing="10">
-                            <Label Text="ABN/ACN/License Number"
+                        <VerticalStackLayout Spacing="14">
+                            <Label Text="Business Credentials"
                                    TextColor="{StaticResource BrandNavy}"
                                    FontFamily="OpenSansSemibold"
                                    FontAttributes="Bold"
                                    FontSize="14" />
+
+                            <!-- ABN Number (required, exactly 11 digits, numeric-only keypad) -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Style="{StaticResource FieldLabelStyle}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="ABN Number " />
+                                            <Span Text="*" TextColor="{StaticResource ErrorRed}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Border Style="{StaticResource InputBorderStyle}">
+                                    <Entry Style="{StaticResource InputEntryStyle}"
+                                           Placeholder="11-digit ABN (e.g. 12345678901)"
+                                           Keyboard="Numeric"
+                                           MaxLength="11"
+                                           Text="{Binding AbnNumber, Mode=TwoWay}"
+                                           AutomationId="SignupAbnNumber" />
+                                </Border>
+                                <Label Text="{Binding AbnNumberError}"
+                                       IsVisible="{Binding HasAbnNumberError}"
+                                       TextColor="{StaticResource ErrorRed}"
+                                       FontSize="12" Margin="4,0,0,0" />
+                            </VerticalStackLayout>
+
+                            <!-- Licence Number (required, up to 20 alphanumeric chars) -->
+                            <VerticalStackLayout Spacing="6">
+                                <Label Style="{StaticResource FieldLabelStyle}">
+                                    <Label.FormattedText>
+                                        <FormattedString>
+                                            <Span Text="Licence Number " />
+                                            <Span Text="*" TextColor="{StaticResource ErrorRed}" />
+                                        </FormattedString>
+                                    </Label.FormattedText>
+                                </Label>
+                                <Border Style="{StaticResource InputBorderStyle}">
+                                    <Entry Style="{StaticResource InputEntryStyle}"
+                                           Placeholder="Up to 20 characters"
+                                           MaxLength="20"
+                                           Text="{Binding LicenseNumber, Mode=TwoWay}"
+                                           AutomationId="SignupLicenseNumber" />
+                                </Border>
+                                <Label Text="{Binding LicenseNumberError}"
+                                       IsVisible="{Binding HasLicenseNumberError}"
+                                       TextColor="{StaticResource ErrorRed}"
+                                       FontSize="12" Margin="4,0,0,0" />
+                            </VerticalStackLayout>
+
+                            <BoxView HeightRequest="1" Color="{StaticResource InputBorder}" Margin="0,2,0,0" />
+
+                            <Label Text="Upload Supporting Document"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontFamily="OpenSansSemibold"
+                                   FontAttributes="Bold"
+                                   FontSize="13" />
 
                             <Button Text="Upload Document"
                                     Command="{Binding UploadAbnCommand}"
@@ -436,7 +499,7 @@
                                     ContentLayout="Left,8"
                                     AutomationId="SignupUploadAbn" />
 
-                            <Label Text="Upload a clear photo of your ABN, ACN, or License document"
+                            <Label Text="Upload a clear photo of your ABN, ACN, or Licence document"
                                    TextColor="{StaticResource MutedText}"
                                    FontSize="12"
                                    IsVisible="{Binding HasAbnDocument, Converter={StaticResource InverseBoolConverter}}" />

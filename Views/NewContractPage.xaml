@@ -11,15 +11,15 @@
 
     <ContentPage.Resources>
         <Color x:Key="FieldBorder">#E5E7EB</Color>
-        <Color x:Key="FieldBorderActive">#E0A93B</Color>
+        <Color x:Key="FieldBorderActive">#6366F1</Color>
         <Color x:Key="FieldFill">#FFFFFF</Color>
         <Color x:Key="LabelMuted">#475569</Color>
         <Color x:Key="PlaceholderMuted">#94A3B8</Color>
         <Color x:Key="MoneyGreen">#10B981</Color>
         <Color x:Key="MoneyGreenBg">#D1FAE5</Color>
         <Color x:Key="DangerRed">#EF4444</Color>
-        <Color x:Key="MilestoneNavyBadge">#1F2547</Color>
-        <Color x:Key="MilestoneGoldBadge">#E0A93B</Color>
+        <Color x:Key="MilestoneNavyBadge">#0F172A</Color>
+        <Color x:Key="MilestoneGoldBadge">#6366F1</Color>
         <Color x:Key="ReadyAmberBg">#FEF3C7</Color>
 
         <!-- Reusable styles -->

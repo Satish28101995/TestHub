@@ -11,6 +11,7 @@ public static class AppConfig
     public static class Endpoints
     {
         public const string Login            = "v1/Account/Login";
+        public const string SignUp           = "v1/Account/SignUp";
         public const string Logout           = "v1/Account/Logout";
         public const string ForgetPassword   = "v1/Account/ForgetPassword";
         public const string ChangePassword   = "v1/Account/ChangePassword";

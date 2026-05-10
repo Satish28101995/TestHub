@@ -19,6 +19,8 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
     private string _digit2 = string.Empty;
     private string _digit3 = string.Empty;
     private string _digit4 = string.Empty;
+    private string _digit5 = string.Empty;
+    private string _digit6 = string.Empty;
     private string _errorMessage = string.Empty;
     private string _statusMessage = string.Empty;
     private bool _isResending;
@@ -89,7 +91,7 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
     // ------------------------------------------------------------------
     // Per-digit setters. Each setter clamps to the last digit typed so
     // copy-paste of the full code distributes correctly: when the user
-    // pastes "1234" into box 1 the property only keeps "1", and the
+    // pastes "123456" into box 1 the property only keeps "1", and the
     // other boxes pick up their own characters via the page's paste
     // handler. The clamp also stops accidental multi-character input
     // from breaking the layout.
@@ -98,6 +100,8 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
     public string Digit2 { get => _digit2; set => SetDigit(ref _digit2, value, nameof(Digit2)); }
     public string Digit3 { get => _digit3; set => SetDigit(ref _digit3, value, nameof(Digit3)); }
     public string Digit4 { get => _digit4; set => SetDigit(ref _digit4, value, nameof(Digit4)); }
+    public string Digit5 { get => _digit5; set => SetDigit(ref _digit5, value, nameof(Digit5)); }
+    public string Digit6 { get => _digit6; set => SetDigit(ref _digit6, value, nameof(Digit6)); }
 
     public string ErrorMessage
     {
@@ -138,7 +142,7 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
     public ICommand BackCommand { get; }
 
     /// <summary>
-    /// Resets all 4 digit boxes — used after a failed verification or
+    /// Resets all 6 digit boxes — used after a failed verification or
     /// after a resend so the user starts with empty inputs.
     /// </summary>
     public void ClearDigits()
@@ -147,17 +151,20 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
         Digit2 = string.Empty;
         Digit3 = string.Empty;
         Digit4 = string.Empty;
+        Digit5 = string.Empty;
+        Digit6 = string.Empty;
     }
 
     /// <summary>
-    /// Concatenated 4-digit OTP. Returns an empty string if any of the
+    /// Concatenated 6-digit OTP. Returns an empty string if any of the
     /// boxes are blank so the validation can short-circuit.
     /// </summary>
     public string Otp =>
         string.IsNullOrEmpty(_digit1) || string.IsNullOrEmpty(_digit2) ||
-        string.IsNullOrEmpty(_digit3) || string.IsNullOrEmpty(_digit4)
+        string.IsNullOrEmpty(_digit3) || string.IsNullOrEmpty(_digit4) ||
+        string.IsNullOrEmpty(_digit5) || string.IsNullOrEmpty(_digit6)
             ? string.Empty
-            : string.Concat(_digit1, _digit2, _digit3, _digit4);
+            : string.Concat(_digit1, _digit2, _digit3, _digit4, _digit5, _digit6);
 
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
@@ -176,9 +183,9 @@ public sealed class OtpVerificationViewModel : BaseViewModel, IQueryAttributable
         StatusMessage = string.Empty;
 
         var code = Otp;
-        if (code.Length != 4)
+        if (code.Length != 6)
         {
-            ErrorMessage = "Please enter the 4-digit code from your email.";
+            ErrorMessage = "Please enter the 6-digit code from your email.";
             return;
         }
 

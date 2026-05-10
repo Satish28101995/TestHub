@@ -45,6 +45,25 @@ public sealed class AuthService : IAuthService
         return result;
     }
 
+    public Task<ApiResult<bool>> SignUpAsync(
+        SignupRequest payload,
+        UserType userType = UserType.Contractor,
+        CancellationToken ct = default)
+    {
+        ArgumentNullException.ThrowIfNull(payload);
+
+        // Stamp the discriminators server-side fields rely on. Doing this
+        // here (instead of in the VM) keeps every signup call consistent
+        // and means any future SignupRequest caller — Customer flow,
+        // tests, deep-links — gets the right deviceType / userType for free.
+        payload.UserType = (int)userType;
+        payload.DeviceType = (int)HeaderProvider.GetDeviceType();
+
+        // Response envelope: { "data": true|false, "message": "...", "apiName": "..." }
+        // No tokens are issued here — the user has to verify the OTP first.
+        return _api.PostAsync<bool>(AppConfig.Endpoints.SignUp, payload, requireAuth: false, ct);
+    }
+
     public async Task<ApiResult<LoginResponse>> VerifyEmailOtpAsync(
         string email,
         string otp,

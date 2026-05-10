@@ -17,7 +17,7 @@
         <Color x:Key="CardBorder">#EAECF2</Color>
         <Color x:Key="MetaText">#64748B</Color>
         <Color x:Key="DeleteRed">#DC2626</Color>
-        <Color x:Key="SignOutGold">#E0A93B</Color>
+        <Color x:Key="SignOutGold">#6366F1</Color>
         <Color x:Key="TabActiveBg">#FBE6B7</Color>
         <Color x:Key="TabIconMuted">#9AA3B5</Color>
         <Color x:Key="NotifDot">#EF4444</Color>

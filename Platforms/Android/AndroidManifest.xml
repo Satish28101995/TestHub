@@ -1,6 +1,30 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true"></application>
+	<application android:allowBackup="true" android:icon="@mipmap/appicon" android:roundIcon="@mipmap/appicon_round" android:supportsRtl="true">
+
+		<!-- FCM defaults for system-tray pushes that arrive while the app
+		     is in the background. The MyFirebaseMessagingService [Service]
+		     attribute auto-registers itself with the
+		     com.google.firebase.MESSAGING_EVENT intent filter — no manual
+		     <service> entry is needed here. -->
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_icon"
+			android:resource="@mipmap/appicon" />
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_color"
+			android:resource="@color/fcm_notification_color" />
+		<meta-data
+			android:name="com.google.firebase.messaging.default_notification_channel_id"
+			android:value="testhub_default" />
+	</application>
+
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.INTERNET" />
+
+	<!-- Required for FCM token registration / message delivery. -->
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+	<!-- Android 13+ runtime permission to display notifications in the
+	     system tray. Requested at runtime by MainActivity. -->
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 </manifest>

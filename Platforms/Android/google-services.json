@@ -1,0 +1,62 @@
+{
+  "project_info": {
+    "project_number": "695244899171",
+    "project_id": "odin-33602",
+    "storage_bucket": "odin-33602.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:695244899171:android:dcb6866e253f0142f50956",
+        "android_client_info": {
+          "package_name": "com.odin.au"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "695244899171-5icg4noqo8ls82fcqjgts27uhjt9p893.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.odin.au",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "695244899171-bf3htsjjipncs8ft0b5medra9f2rho0g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.odin.au",
+            "certificate_hash": "fc2b188979eaf87fe720888171a6334b46868cb7"
+          }
+        },
+        {
+          "client_id": "695244899171-fj8jl9e5q73dqogtetgg4uptdtrfm56d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4HM4Vc_9zYLq0VGZWCFCj8ekp-RUGEiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "695244899171-fj8jl9e5q73dqogtetgg4uptdtrfm56d.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "695244899171-t3lsen26gf1vttj3a239rkddjv489jjr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.odin.au"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

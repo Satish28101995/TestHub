@@ -27,17 +27,49 @@
     <Color x:Key="Gray900">#212121</Color>
     <Color x:Key="Gray950">#141414</Color>
 
-    <!-- TestHub brand tokens -->
-    <Color x:Key="BrandNavy">#1F2547</Color>
-    <Color x:Key="BrandNavyLight">#2A2E5C</Color>
-    <Color x:Key="BrandGold">#E0A93B</Color>
-    <Color x:Key="BrandGoldDark">#C7892C</Color>
-    <Color x:Key="CardBg">#F4F5F8</Color>
-    <Color x:Key="InputBorder">#E5E7EB</Color>
-    <Color x:Key="MutedText">#6B7280</Color>
+    <!--
+        ============================================================
+        DemoApp brand tokens — v3 (rebrand 2026-05-10, "Obsidian")
+
+        Palette: Obsidian Slate (#0F172A) + Electric Indigo (#6366F1).
+        This is the proven premium-SaaS aesthetic used by Linear,
+        Vercel, Stripe Dashboard, Notion, Cursor, GitHub. Cool + cool
+        harmony, sophisticated dark surface, vibrant indigo CTAs.
+
+        Token NAMES are intentionally kept as the historical
+        "BrandNavy" / "BrandGold" keys because they are referenced
+        by ~180 {StaticResource …} call-sites across 22 XAML pages.
+        Renaming would force editing every page for zero runtime
+        benefit, so the keys stay and only the *values* move.
+
+        New code should prefer the semantic aliases below
+        (BrandPrimary / BrandPrimaryLight / BrandAccent /
+        BrandAccentDark) — they always resolve to the same colour
+        as the legacy keys but read accurately.
+        ============================================================
+    -->
+    <Color x:Key="BrandNavy">#0F172A</Color>          <!-- alias for BrandPrimary      -->
+    <Color x:Key="BrandNavyLight">#1E293B</Color>     <!-- alias for BrandPrimaryLight -->
+    <Color x:Key="BrandGold">#6366F1</Color>          <!-- alias for BrandAccent       -->
+    <Color x:Key="BrandGoldDark">#4338CA</Color>      <!-- alias for BrandAccentDark   -->
+
+    <!-- Semantic aliases — preferred for any new XAML / styles. -->
+    <Color x:Key="BrandPrimary">#0F172A</Color>
+    <Color x:Key="BrandPrimaryLight">#1E293B</Color>
+    <Color x:Key="BrandPrimaryDark">#020617</Color>
+    <Color x:Key="BrandAccent">#6366F1</Color>
+    <Color x:Key="BrandAccentLight">#818CF8</Color>
+    <Color x:Key="BrandAccentDark">#4338CA</Color>
+
+    <!-- Neutral surface palette tuned to pair with slate + indigo. -->
+    <Color x:Key="CardBg">#F8FAFC</Color>             <!-- slate-50 -->
+    <Color x:Key="InputBorder">#E2E8F0</Color>        <!-- slate-200 -->
+    <Color x:Key="MutedText">#64748B</Color>          <!-- slate-500 -->
 
     <SolidColorBrush x:Key="BrandNavyBrush" Color="{StaticResource BrandNavy}" />
     <SolidColorBrush x:Key="BrandGoldBrush" Color="{StaticResource BrandGold}" />
+    <SolidColorBrush x:Key="BrandPrimaryBrush" Color="{StaticResource BrandPrimary}" />
+    <SolidColorBrush x:Key="BrandAccentBrush" Color="{StaticResource BrandAccent}" />
     <SolidColorBrush x:Key="InputBorderBrush" Color="{StaticResource InputBorder}" />
 
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource Primary}"/>

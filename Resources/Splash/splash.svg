@@ -1,29 +1,54 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+    DemoApp splash mark — v4 (rebrand 2026-05-10, "Obsidian")
+    Same hub-and-spoke composition as the in-app logo, but without
+    the rounded card (the splash screen colour fills the device with
+    BrandPrimary #0F172A). BaseSize 128,128 (TestHub.csproj) so MAUI
+    scales this up crisply on every density bucket.
+-->
 <svg width="456" height="456" viewBox="0 0 456 456" version="1.1"
      xmlns="http://www.w3.org/2000/svg">
     <defs>
-        <linearGradient id="goldRight" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stop-color="#F4C04A" />
-            <stop offset="100%" stop-color="#C7892C" />
+        <linearGradient id="ringFill" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#A5B4FC" />
+            <stop offset="40%"  stop-color="#6366F1" />
+            <stop offset="100%" stop-color="#4338CA" />
         </linearGradient>
-        <linearGradient id="goldLeft" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%"   stop-color="#3F4774" />
-            <stop offset="100%" stop-color="#1F2547" />
+        <linearGradient id="ringStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%"   stop-color="#C7D2FE" />
+            <stop offset="55%"  stop-color="#818CF8" />
+            <stop offset="100%" stop-color="#3730A3" />
         </linearGradient>
-        <linearGradient id="apexAccent" x1="0%" y1="0%" x2="0%" y2="100%">
-            <stop offset="0%"   stop-color="#2A2F55" />
-            <stop offset="100%" stop-color="#101428" />
+        <linearGradient id="innerDisc" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#0F172A" />
+            <stop offset="100%" stop-color="#020617" />
         </linearGradient>
     </defs>
 
-    <g>
-        <path d="M 228,80 L 100,372 L 184,372 L 228,242 Z"
-              fill="url(#goldLeft)" />
-        <path d="M 228,80 L 228,242 L 272,372 L 356,372 Z"
-              fill="url(#goldRight)" />
-        <path d="M 172,304 L 284,304 L 268,268 L 188,268 Z"
-              fill="url(#goldRight)" opacity="0.95" />
-        <path d="M 228,168 L 212,206 L 244,206 Z"
-              fill="url(#apexAccent)" opacity="0.85" />
+    <g transform="translate(228 228)">
+
+        <g stroke="url(#ringStroke)" stroke-width="5" stroke-linecap="round" opacity="0.45">
+            <line x1="0"    y1="-96"  x2="0"    y2="-148" />
+            <line x1="83"   y1="48"   x2="128"  y2="74"  />
+            <line x1="-83"  y1="48"   x2="-128" y2="74"  />
+        </g>
+
+        <g fill="url(#ringFill)">
+            <circle cx="0"    cy="-156" r="13" />
+            <circle cx="135"  cy="78"   r="13" />
+            <circle cx="-135" cy="78"   r="13" />
+        </g>
+
+        <circle cx="0" cy="0" r="106" fill="url(#ringFill)" />
+        <circle cx="0" cy="0" r="92"  fill="url(#innerDisc)" />
+
+        <ellipse cx="0" cy="-26" rx="64" ry="26" fill="#6366F1" opacity="0.16" />
+
+        <path d="M -46,4 L -12,38 L 48,-30"
+              fill="none"
+              stroke="url(#ringStroke)"
+              stroke-width="20"
+              stroke-linecap="round"
+              stroke-linejoin="round" />
     </g>
 </svg>

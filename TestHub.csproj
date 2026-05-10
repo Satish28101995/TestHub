@@ -27,11 +27,21 @@
 		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
-		<!-- Display name -->
-		<ApplicationTitle>TestHub</ApplicationTitle>
+		<!-- Display name (shown on the Android launcher, iOS home screen,
+		     and the Windows window title bar). The internal C# namespace,
+		     assembly name, and Firebase ApplicationId remain "TestHub" /
+		     "com.odin.au" on purpose — renaming those would be a project-
+		     wide refactor and would invalidate the Firebase registration. -->
+		<ApplicationTitle>DemoApp</ApplicationTitle>
 
-		<!-- App Identifier -->
-		<ApplicationId>com.companyname.testhub</ApplicationId>
+		<!-- App Identifier — must match the Android package_name and iOS
+		     BUNDLE_ID registered in the Firebase Console (project odin-33602).
+		     If you re-issue the Firebase configs against a different
+		     identifier, update both `Platforms/Android/google-services.json`
+		     and `Platforms/iOS/GoogleService-Info.plist` to match, otherwise
+		     FCM will refuse token registration and IDeviceTokenProvider
+		     returns empty. -->
+		<ApplicationId>com.odin.au</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -42,17 +52,21 @@
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">15.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<!-- Bumped from 21 to 23 because Firebase Messaging (and its
+		     transitive AndroidX.Lifecycle.Runtime dependency) require a
+		     minimum SDK of 23. Android 5.0 / API 21–22 share <0.1% of
+		     the install base today, so this is a safe modern minimum. -->
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">23.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#1F2547" />
+		<!-- App Icon (Color must match BrandPrimary in Resources/Styles/Colors.xaml) -->
+		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#0F172A" />
 
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#1F2547" BaseSize="128,128" />
+		<!-- Splash Screen (Color must match BrandPrimary in Resources/Styles/Colors.xaml) -->
+		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#0F172A" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -69,6 +83,49 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0" />
+	</ItemGroup>
+
+	<!-- Firebase Cloud Messaging — Android only. The package needs a
+	     google-services.json next to it (see Platforms/Android/) for the
+	     FCM token retrieval to succeed at runtime. -->
+	<ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+		<PackageReference Include="Xamarin.Firebase.Messaging" Version="125.0.1.2" />
+	</ItemGroup>
+
+	<!-- Pick up the Firebase config when the developer has placed it at
+	     Platforms/Android/google-services.json. The Exists() guard means
+	     the build still succeeds for contributors who haven't downloaded
+	     the file yet — they'll just get the GUID-based fallback token at
+	     runtime instead of a real FCM registration token. -->
+	<ItemGroup Condition="$(TargetFramework.Contains('-android')) AND Exists('Platforms\Android\google-services.json')">
+		<GoogleServicesJson Include="Platforms\Android\google-services.json" />
+	</ItemGroup>
+
+	<!-- Firebase Cloud Messaging — iOS / Mac Catalyst. We use the
+	     community-maintained AdamE.Firebase.iOS.* native bindings since
+	     the original Xamarin.Firebase.iOS.* packages were archived in
+	     2024. The same Firebase.Core / Firebase.CloudMessaging namespaces
+	     are exposed, matching the API in Apple's official docs. -->
+	<ItemGroup Condition="$(TargetFramework.Contains('-ios')) OR $(TargetFramework.Contains('-maccatalyst'))">
+		<PackageReference Include="AdamE.Firebase.iOS.CloudMessaging" Version="12.5.0.4" />
+	</ItemGroup>
+
+	<!-- Codesign entitlements — drives the aps-environment value that
+	     APNs / FCM require for token registration. Only wired up for
+	     iOS / Mac Catalyst; other platforms ignore the property. -->
+	<PropertyGroup Condition="$(TargetFramework.Contains('-ios')) OR $(TargetFramework.Contains('-maccatalyst'))">
+		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+	</PropertyGroup>
+
+	<!-- Pick up the Firebase config when the developer has placed it at
+	     Platforms/iOS/GoogleService-Info.plist. The Exists() guard means
+	     the build still succeeds for contributors who haven't downloaded
+	     the file yet — they'll just get the GUID-based fallback token at
+	     runtime instead of a real FCM registration token. The plist must
+	     be a BundleResource so it ends up inside the app bundle where
+	     Firebase.Core.App.Configure() can find it. -->
+	<ItemGroup Condition="($(TargetFramework.Contains('-ios')) OR $(TargetFramework.Contains('-maccatalyst'))) AND Exists('Platforms\iOS\GoogleService-Info.plist')">
+		<BundleResource Include="Platforms\iOS\GoogleService-Info.plist" LogicalName="GoogleService-Info.plist" />
 	</ItemGroup>
 
 </Project>

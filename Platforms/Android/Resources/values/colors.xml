@@ -3,4 +3,11 @@
     <color name="colorPrimary">#512BD4</color>
     <color name="colorPrimaryDark">#2B0B98</color>
     <color name="colorAccent">#2B0B98</color>
+
+    <!-- Brand primary (obsidian slate) used as the accent for FCM-rendered
+         system pushes. Must stay in sync with BrandPrimary in
+         Resources/Styles/Colors.xaml. Kept all-lowercase because AAPT2
+         normalises resource names and mixed-case IDs (e.g. colorPrimary)
+         are not addressable via the manifest's @color reference syntax. -->
+    <color name="fcm_notification_color">#0F172A</color>
 </resources>

@@ -6,7 +6,7 @@ namespace TestHub.Models.Auth;
 public enum UserType
 {
     Unknown = 0,
-    Contractor = 1,
-    Customer = 2,
-    Admin = 3,
+    Contractor = 2,
+    Customer = 3,
+    Admin = 1,
 }

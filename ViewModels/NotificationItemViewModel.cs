@@ -63,12 +63,12 @@ public sealed class NotificationItemViewModel : BaseViewModel
     public Color           TitleColor          => IsUnread ? Color.FromArgb("#0F172A") : Color.FromArgb("#475569");
 
     /// <summary>
-    /// Drives the thin left-edge accent stripe on the card. Gold for
-    /// unread rows, transparent for read rows so the layout still
-    /// reserves the same horizontal space and rows don't shift when
-    /// the user opens one.
+    /// Drives the thin left-edge accent stripe on the card. Electric indigo
+    /// (BrandAccent #6366F1 from Resources/Styles/Colors.xaml) for unread
+    /// rows, transparent for read rows so the layout still reserves the
+    /// same horizontal space and rows don't shift when the user opens one.
     /// </summary>
-    public Color AccentColor => IsUnread ? Color.FromArgb("#F4C04A") : Colors.Transparent;
+    public Color AccentColor => IsUnread ? Color.FromArgb("#6366F1") : Colors.Transparent;
 
     /// <summary>
     /// Pretty "x ago" stamp computed from <c>createdAtUtc</c>. Uses

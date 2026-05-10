@@ -4,8 +4,8 @@ namespace TestHub.Models.Contract;
 
 public sealed class ContractRequest
 {
-    [JsonPropertyName("contractId")]          public int ContractId { get; set; }
-    [JsonPropertyName("quoteId")]             public int QuoteId { get; set; }
+    [JsonPropertyName("contractId")]          public int? ContractId { get; set; }
+    [JsonPropertyName("quoteId")]             public int? QuoteId { get; set; }
     [JsonPropertyName("projectName")]         public string? ProjectName { get; set; }
     [JsonPropertyName("startDate")]           public DateTime StartDate { get; set; }
     [JsonPropertyName("endDate")]             public DateTime EndDate { get; set; }

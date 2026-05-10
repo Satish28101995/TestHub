@@ -5,17 +5,20 @@ namespace TestHub.Drawables;
 
 /// <summary>
 /// IDrawable that paints the "Revenue Trend" bar chart used on the Reports
-/// page. Designed to mirror the marketing screenshot — gold-gradient bars
+/// page. Designed to mirror the marketing screenshot — indigo-gradient bars
 /// with rounded tops, a single highlighted bar with a floating tooltip,
 /// integer Y axis grid (0, 10k, 20k…), and three-letter month labels.
+/// Colors map to BrandAccent / BrandAccentLight / BrandAccentDark in
+/// Resources/Styles/Colors.xaml so the chart stays in lockstep with the
+/// rest of the design system.
 /// </summary>
 public sealed class RevenueBarChartDrawable : IDrawable
 {
-    private static readonly Color GridColor       = Color.FromArgb("#F1F5F9");
-    private static readonly Color AxisLabelColor  = Color.FromArgb("#94A3B8");
-    private static readonly Color BarTopColor     = Color.FromArgb("#C7892C");
-    private static readonly Color BarBottomColor  = Color.FromArgb("#F2D58A");
-    private static readonly Color TooltipBgColor  = Color.FromArgb("#E0A93B");
+    private static readonly Color GridColor        = Color.FromArgb("#F1F5F9");
+    private static readonly Color AxisLabelColor   = Color.FromArgb("#94A3B8");
+    private static readonly Color BarTopColor      = Color.FromArgb("#4338CA"); // BrandAccentDark
+    private static readonly Color BarBottomColor   = Color.FromArgb("#A5B4FC"); // BrandAccentLight
+    private static readonly Color TooltipBgColor   = Color.FromArgb("#6366F1"); // BrandAccent
     private static readonly Color TooltipTextColor = Colors.White;
 
     /// <summary>

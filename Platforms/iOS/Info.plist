@@ -28,5 +28,30 @@
 	</array>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/appicon.appiconset</string>
+
+	<!--
+	  Background modes required by Firebase Cloud Messaging.
+
+	  - "remote-notification" — lets iOS deliver silent / data pushes to
+	    DidReceiveRemoteNotification while the app is suspended, which is
+	    how FCM forwards data-only payloads.
+	  - "fetch" — lets the OS occasionally wake the app for background
+	    fetch; the FCM SDK uses this to keep the registration token
+	    fresh even when the user hasn't opened the app for a while.
+	-->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>fetch</string>
+	</array>
+
+	<!--
+	  Disable FCM's UIApplicationDelegate method swizzling. We forward
+	  the APNs token to FCM ourselves from AppDelegate.RegisteredForRemoteNotifications,
+	  which keeps the token-flow plumbing explicit and matches the way
+	  the Android side delivers tokens via MyFirebaseMessagingService.
+	-->
+	<key>FirebaseAppDelegateProxyEnabled</key>
+	<false/>
 </dict>
 </plist>
