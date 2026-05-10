@@ -34,7 +34,7 @@ public sealed class ProfileViewModel : BaseViewModel
         _session = session;
 
         EditProfileCommand    = new AsyncRelayCommand(() => Coming("Edit Profile"));
-        ChangePasswordCommand = new AsyncRelayCommand(() => Coming("Change Password"));
+        ChangePasswordCommand = new AsyncRelayCommand(GoToChangePasswordAsync);
         ManageBankCommand     = new AsyncRelayCommand(() => Coming("Bank Account"));
         OpenPremiumCommand    = new AsyncRelayCommand(() => Coming("Premium Plan"));
         OpenDisputesCommand   = new AsyncRelayCommand(() => Coming("Dispute Tickets"));
@@ -305,6 +305,9 @@ public sealed class ProfileViewModel : BaseViewModel
 
     private static Task GoToTermsAsync()
         => Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync("//terms");
+
+    private static Task GoToChangePasswordAsync()
+        => Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync("//changepassword");
 
     private static Task GoBackAsync()
         => Shell.Current is null ? Task.CompletedTask : Shell.Current.GoToAsync("//dashboard");

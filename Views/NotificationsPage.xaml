@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.NotificationsPage"
+             x:Name="NotificationsRoot"
+             x:DataType="vm:NotificationsViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource White}">
+
+    <ContentPage.Resources>
+        <Color x:Key="MutedText">#94A3B8</Color>
+        <Color x:Key="LabelText">#64748B</Color>
+        <Color x:Key="MessageText">#475569</Color>
+        <Color x:Key="HeaderDivider">#EAECF2</Color>
+        <Color x:Key="CardBorder">#EEF1F6</Color>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ============================================================ -->
+        <!-- HEADER (white bar with pill back button + title + bell)        -->
+        <!-- ============================================================ -->
+        <Grid Grid.Row="0"
+              BackgroundColor="{StaticResource White}"
+              RowDefinitions="*,Auto"
+              Padding="0">
+            <Grid Grid.Row="0"
+                  ColumnDefinitions="Auto,*,Auto"
+                  ColumnSpacing="12"
+                  Padding="16,40,16,14"
+                  VerticalOptions="Center">
+
+                <!-- Back button (rounded light-gray pill) -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#F1F4F9"
+                        Stroke="Transparent"
+                        StrokeThickness="0"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        AutomationId="NotificationsBack">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="icon_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <Label Grid.Column="1"
+                       Text="Notifications"
+                       TextColor="{StaticResource BrandNavy}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold"
+                       VerticalOptions="Center" />
+
+                <!-- Notification bell trailing icon -->
+                <Border Grid.Column="2"
+                        BackgroundColor="#F1F4F9"
+                        Stroke="Transparent"
+                        StrokeThickness="0"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        AutomationId="NotificationsBell">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <Image Source="icon_bell.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+            </Grid>
+
+            <!-- Hairline bottom divider -->
+            <BoxView Grid.Row="1"
+                     HeightRequest="1"
+                     Color="{StaticResource HeaderDivider}" />
+        </Grid>
+
+        <!-- ============================================================ -->
+        <!-- LIST                                                           -->
+        <!-- ============================================================ -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Items}"
+                            SelectionMode="None"
+                            RemainingItemsThreshold="3"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                </CollectionView.ItemsLayout>
+
+                <!-- ===================== ITEM TEMPLATE ===================== -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:NotificationItemViewModel">
+                        <Border BackgroundColor="{StaticResource White}"
+                                Stroke="{StaticResource CardBorder}"
+                                StrokeThickness="1"
+                                Padding="0"
+                                Margin="16,0,16,0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.OpenCommand, Source={x:Reference NotificationsRoot}}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <Grid ColumnDefinitions="4,*" ColumnSpacing="0">
+                                <!-- Gold left-edge accent stripe (unread) / transparent (read) -->
+                                <BoxView Grid.Column="0"
+                                         Color="{Binding AccentColor}"
+                                         HorizontalOptions="Fill"
+                                         VerticalOptions="Fill" />
+
+                                <!-- Card content -->
+                                <VerticalStackLayout Grid.Column="1"
+                                                     Padding="14,12,14,12"
+                                                     Spacing="6">
+
+                                    <!-- Title row + time-ago -->
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="6"
+                                          VerticalOptions="Center">
+
+                                        <!-- Bullet dot (only when unread) -->
+                                        <Ellipse Grid.Column="0"
+                                                 Fill="{Binding AccentColor}"
+                                                 WidthRequest="8"
+                                                 HeightRequest="8"
+                                                 VerticalOptions="Center"
+                                                 IsVisible="{Binding IsUnread}" />
+
+                                        <Label Grid.Column="1"
+                                               Text="{Binding Title}"
+                                               TextColor="{Binding TitleColor}"
+                                               FontAttributes="{Binding TitleFontAttributes}"
+                                               FontSize="14"
+                                               FontFamily="OpenSansSemibold"
+                                               LineBreakMode="TailTruncation"
+                                               VerticalOptions="Center" />
+
+                                        <Label Grid.Column="2"
+                                               Text="{Binding TimeAgoDisplay}"
+                                               TextColor="{StaticResource MutedText}"
+                                               FontSize="12"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+
+                                    <Label Text="{Binding Message}"
+                                           TextColor="{StaticResource MessageText}"
+                                           FontSize="13"
+                                           LineHeight="1.4" />
+                                </VerticalStackLayout>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <!-- ===================== HEADER (small top spacer) ===================== -->
+                <CollectionView.Header>
+                    <BoxView HeightRequest="14" Color="Transparent" />
+                </CollectionView.Header>
+
+                <!-- ===================== FOOTER (load-more spinner) ===================== -->
+                <CollectionView.Footer>
+                    <VerticalStackLayout Padding="16,12,16,40" Spacing="8">
+                        <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                           IsVisible="{Binding IsLoadingMore}"
+                                           Color="{StaticResource BrandGold}"
+                                           HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+
+                <!-- ===================== EMPTY STATE ===================== -->
+                <CollectionView.EmptyView>
+                    <Grid Padding="24,60">
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="icon_bell.png"
+                                   WidthRequest="56"
+                                   HeightRequest="56"
+                                   HorizontalOptions="Center"
+                                   Opacity="0.5" />
+                            <Label Text="You're all caught up"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="New notifications will appear here as they come in."
+                                   TextColor="{StaticResource MutedText}"
+                                   FontSize="12"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

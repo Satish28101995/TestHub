@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             xmlns:controls="clr-namespace:TestHub.Controls"
+             x:Class="TestHub.Views.ReportsPage"
+             x:DataType="vm:ReportsViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource CardBg}">
+
+    <ContentPage.Resources>
+        <Color x:Key="MutedText">#94A3B8</Color>
+        <Color x:Key="LabelText">#64748B</Color>
+        <Color x:Key="TabIconMuted">#9AA3B5</Color>
+        <Color x:Key="TabActiveBg">#FBE6B7</Color>
+        <Color x:Key="NotifDot">#EF4444</Color>
+        <Color x:Key="HeaderStatBg">#262C54</Color>
+        <Color x:Key="ChipBorder">#E5E7EB</Color>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ============================================================ -->
+        <!-- HEADER (Business Reports + 2 stat tiles)                      -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource BrandNavy}"
+                Stroke="Transparent"
+                StrokeThickness="0"
+                Padding="20,28,20,22">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="0,0,28,28" />
+            </Border.StrokeShape>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="{StaticResource BrandNavyLight}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource BrandNavy}"      Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <VerticalStackLayout Spacing="16">
+                <Label Text="Business Reports"
+                       TextColor="{StaticResource White}"
+                       FontSize="22"
+                       FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold" />
+
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                    <Border Grid.Column="0"
+                            BackgroundColor="{StaticResource HeaderStatBg}"
+                            Stroke="#3A4078"
+                            StrokeThickness="1"
+                            Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Total Revenue"
+                                   TextColor="#C7CBD7"
+                                   FontSize="12"
+                                   FontFamily="OpenSansSemibold" />
+                            <Label Text="{Binding TotalRevenueDisplay}"
+                                   TextColor="{StaticResource White}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <Border Grid.Column="1"
+                            BackgroundColor="{StaticResource HeaderStatBg}"
+                            Stroke="#3A4078"
+                            StrokeThickness="1"
+                            Padding="14">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="14" />
+                        </Border.StrokeShape>
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Outstanding"
+                                   TextColor="#C7CBD7"
+                                   FontSize="12"
+                                   FontFamily="OpenSansSemibold" />
+                            <Label Text="{Binding OutstandingDisplay}"
+                                   TextColor="{StaticResource White}"
+                                   FontSize="24"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold" />
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- BODY                                                           -->
+        <!-- ============================================================ -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                     Command="{Binding RefreshCommand}">
+            <ScrollView>
+                <VerticalStackLayout Padding="16,18,16,110" Spacing="18">
+
+                    <!-- Revenue trend chart card -->
+                    <Border BackgroundColor="{StaticResource White}"
+                            Stroke="#EAECF2"
+                            StrokeThickness="1"
+                            Padding="18,18,18,12">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="16" />
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Opacity="0.06" Radius="14" Offset="0,4" />
+                        </Border.Shadow>
+
+                        <VerticalStackLayout Spacing="12">
+                            <!-- Title + Filter pill -->
+                            <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                                <Label Grid.Column="0"
+                                       Text="{Binding ChartTitle}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center" />
+
+                                <HorizontalStackLayout Grid.Column="1"
+                                                       Spacing="8"
+                                                       VerticalOptions="Center">
+                                    <Label Text="Filter by"
+                                           TextColor="{StaticResource LabelText}"
+                                           FontSize="12"
+                                           VerticalOptions="Center" />
+
+                                    <!-- Year picker pill -->
+                                    <Border BackgroundColor="{StaticResource White}"
+                                            Stroke="{StaticResource ChipBorder}"
+                                            StrokeThickness="1"
+                                            Padding="12,4"
+                                            VerticalOptions="Center"
+                                            AutomationId="ReportsYearFilter">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="999" />
+                                        </Border.StrokeShape>
+                                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="6">
+                                            <Picker Grid.Column="0"
+                                                    ItemsSource="{Binding Years}"
+                                                    SelectedItem="{Binding SelectedYear, Mode=TwoWay}"
+                                                    BackgroundColor="Transparent"
+                                                    TextColor="{StaticResource BrandNavy}"
+                                                    FontSize="13"
+                                                    FontFamily="OpenSansSemibold"
+                                                    HeightRequest="32"
+                                                    HorizontalOptions="Fill"
+                                                    VerticalOptions="Center" />
+                                            <Image Grid.Column="1"
+                                                   Source="icon_chevron_down.png"
+                                                   WidthRequest="14"
+                                                   HeightRequest="14"
+                                                   VerticalOptions="Center"
+                                                   InputTransparent="True" />
+                                        </Grid>
+                                    </Border>
+                                </HorizontalStackLayout>
+                            </Grid>
+
+                            <!-- Chart -->
+                            <controls:RevenueChartView
+                                ItemsSource="{Binding MonthlyRevenue}"
+                                HighlightedIndex="{Binding HighlightedIndex}"
+                                HeightRequest="240"
+                                HorizontalOptions="Fill" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </ScrollView>
+        </RefreshView>
+
+        <!-- ============================================================ -->
+        <!-- TAB BAR (floating rounded pill, Reports active)                -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="1"
+                BackgroundColor="{StaticResource White}"
+                Stroke="#EAECF2"
+                StrokeThickness="1"
+                Padding="12,8,12,8"
+                Margin="14,0,14,16"
+                HorizontalOptions="Fill"
+                VerticalOptions="End">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="32" />
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Opacity="0.12" Radius="18" Offset="0,4" />
+            </Border.Shadow>
+
+            <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
+
+                <!-- Home -->
+                <VerticalStackLayout Grid.Column="0"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="ReportsTabHome">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoHomeCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_home.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Home" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Projects -->
+                <VerticalStackLayout Grid.Column="1"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="ReportsTabProjects">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoProjectsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_projects.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Projects" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Invoices -->
+                <VerticalStackLayout Grid.Column="2"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="ReportsTabInvoices">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoInvoicesCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_invoices.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Invoices" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!-- Reports (active) -->
+                <Border Grid.Column="3"
+                        BackgroundColor="{StaticResource TabActiveBg}"
+                        Stroke="Transparent"
+                        Padding="0,8"
+                        AutomationId="ReportsTabReports">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="14" />
+                    </Border.StrokeShape>
+                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
+                        <Grid WidthRequest="24" HeightRequest="24" HorizontalOptions="Center">
+                            <Image Source="tab_reports.png"
+                                   WidthRequest="22"
+                                   HeightRequest="22" />
+                            <Ellipse Fill="{StaticResource NotifDot}"
+                                     WidthRequest="6"
+                                     HeightRequest="6"
+                                     HorizontalOptions="End"
+                                     VerticalOptions="Start" />
+                        </Grid>
+                        <Label Text="Reports"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="11"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- Profile -->
+                <VerticalStackLayout Grid.Column="4"
+                                     Padding="0,8"
+                                     HorizontalOptions="Center"
+                                     Spacing="4"
+                                     AutomationId="ReportsTabProfile">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding GoProfileCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    <Image Source="tab_profile.png" WidthRequest="22" HeightRequest="22" />
+                    <Label Text="Profile" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

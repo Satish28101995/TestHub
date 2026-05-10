@@ -59,10 +59,10 @@
             <Setter Property="StrokeThickness" Value="1" />
             <Setter Property="StrokeShape">
                 <Setter.Value>
-                    <RoundRectangle CornerRadius="14" />
+                    <RoundRectangle CornerRadius="12" />
                 </Setter.Value>
             </Setter>
-            <Setter Property="Padding" Value="14" />
+            <Setter Property="Padding" Value="14,14,14,12" />
         </Style>
 
         <Style x:Key="StatLabelStyle" TargetType="Label">
@@ -71,19 +71,22 @@
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
             <Setter Property="CharacterSpacing" Value="0.6" />
+            <Setter Property="VerticalOptions" Value="Center" />
         </Style>
 
         <Style x:Key="StatValueStyle" TargetType="Label">
             <Setter Property="TextColor" Value="{StaticResource White}" />
-            <Setter Property="FontSize" Value="26" />
+            <Setter Property="FontSize" Value="28" />
             <Setter Property="FontAttributes" Value="Bold" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="LineHeight" Value="1.05" />
         </Style>
 
         <Style x:Key="StatTrendStyle" TargetType="Label">
             <Setter Property="TextColor" Value="{StaticResource StatTrendGreen}" />
             <Setter Property="FontSize" Value="11" />
             <Setter Property="FontFamily" Value="OpenSansSemibold" />
+            <Setter Property="VerticalOptions" Value="Center" />
         </Style>
 
         <Style x:Key="QuickActionTileStyle" TargetType="Border">
@@ -91,26 +94,45 @@
             <Setter Property="StrokeThickness" Value="0" />
             <Setter Property="StrokeShape">
                 <Setter.Value>
-                    <RoundRectangle CornerRadius="14" />
+                    <RoundRectangle CornerRadius="12" />
                 </Setter.Value>
             </Setter>
             <Setter Property="Padding" Value="0" />
         </Style>
+
+        <Style x:Key="StatIconChipStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="#33FFFFFF" />
+            <Setter Property="Stroke" Value="Transparent" />
+            <Setter Property="WidthRequest" Value="28" />
+            <Setter Property="HeightRequest" Value="28" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="VerticalOptions" Value="Center" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="8" />
+                </Setter.Value>
+            </Setter>
+        </Style>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto,*,Auto">
+    <Grid>
+
+        <!-- ============================================================ -->
+        <!-- BODY (header + content all scroll together)                    -->
+        <!-- ============================================================ -->
+        <ScrollView>
+            <VerticalStackLayout>
 
         <!-- ============================================================ -->
         <!-- HEADER: ONBOARDING (any flag is false)                         -->
         <!-- ============================================================ -->
-        <Border Grid.Row="0"
-                BackgroundColor="{StaticResource BrandNavy}"
+        <Border BackgroundColor="{StaticResource BrandNavy}"
                 Stroke="Transparent"
                 StrokeThickness="0"
                 Padding="20,28,20,24"
                 IsVisible="{Binding IsOnboardingPending}">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="0,0,28,28" />
+                <RoundRectangle CornerRadius="0" />
             </Border.StrokeShape>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -142,7 +164,7 @@
                                 Stroke="Transparent"
                                 Padding="0">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="14" />
+                                <RoundRectangle CornerRadius="12" />
                             </Border.StrokeShape>
                             <Image Source="icon_bell.png"
                                    WidthRequest="20"
@@ -295,14 +317,13 @@
         <!-- ============================================================ -->
         <!-- HEADER: COMPLETED (all four flags are true)                    -->
         <!-- ============================================================ -->
-        <Border Grid.Row="0"
-                BackgroundColor="{StaticResource BrandNavy}"
+        <Border BackgroundColor="{StaticResource BrandNavy}"
                 Stroke="Transparent"
                 StrokeThickness="0"
                 Padding="20,28,20,28"
                 IsVisible="{Binding IsOnboardingComplete}">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="0,0,28,28" />
+                <RoundRectangle CornerRadius="0" />
             </Border.StrokeShape>
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -334,7 +355,7 @@
                                 Stroke="Transparent"
                                 Padding="0">
                             <Border.StrokeShape>
-                                <RoundRectangle CornerRadius="14" />
+                                <RoundRectangle CornerRadius="12" />
                             </Border.StrokeShape>
                             <Image Source="icon_bell.png"
                                    WidthRequest="20"
@@ -367,92 +388,68 @@
 
                     <!-- Projects -->
                     <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource StatCardStyle}">
-                        <VerticalStackLayout Spacing="6">
+                        <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
                                 <Label Grid.Column="0"
                                        Text="PROJECTS"
                                        Style="{StaticResource StatLabelStyle}" />
-                                <Border Grid.Column="1"
-                                        BackgroundColor="#33FFFFFF"
-                                        Stroke="Transparent"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
-                                        Padding="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="9" />
-                                    </Border.StrokeShape>
+                                <Border Grid.Column="1" Style="{StaticResource StatIconChipStyle}">
                                     <Image Source="stat_doc.png"
-                                           WidthRequest="16"
-                                           HeightRequest="16"
-                                           HorizontalOptions="Center"
-                                           VerticalOptions="Center" />
-                                </Border>
-                            </Grid>
-                            <Label Text="{Binding ProjectsCount}" Style="{StaticResource StatValueStyle}" />
-                            <HorizontalStackLayout Spacing="4">
-                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
-                                <Label Text="{Binding ProjectsTrend}" Style="{StaticResource StatTrendStyle}" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Border>
-
-                    <!-- Active -->
-                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource StatCardStyle}">
-                        <VerticalStackLayout Spacing="6">
-                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
-                                <Label Grid.Column="0"
-                                       Text="ACTIVE"
-                                       Style="{StaticResource StatLabelStyle}" />
-                                <Border Grid.Column="1"
-                                        BackgroundColor="#33FFFFFF"
-                                        Stroke="Transparent"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
-                                        Padding="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="9" />
-                                    </Border.StrokeShape>
-                                    <Image Source="stat_lightning.png"
                                            WidthRequest="14"
                                            HeightRequest="14"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center" />
                                 </Border>
                             </Grid>
-                            <Label Text="{Binding ActiveCount}" Style="{StaticResource StatValueStyle}" />
-                            <HorizontalStackLayout Spacing="4">
-                                <Label Text="✓" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
-                                <Label Text="{Binding ActiveTrend}" Style="{StaticResource StatTrendStyle}" />
+                            <Label Text="{Binding ProjectsCount}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" VerticalOptions="Center" />
+                                <Label Text="{Binding ProjectsTrend}" Style="{StaticResource StatTrendStyle}" />
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Contracts -->
+                    <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource StatCardStyle}">
+                        <VerticalStackLayout Spacing="8">
+                            <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
+                                <Label Grid.Column="0"
+                                       Text="CONTRACTS"
+                                       Style="{StaticResource StatLabelStyle}" />
+                                <Border Grid.Column="1" Style="{StaticResource StatIconChipStyle}">
+                                    <Image Source="stat_lightning.png"
+                                           WidthRequest="13"
+                                           HeightRequest="13"
+                                           HorizontalOptions="Center"
+                                           VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
+                            <Label Text="{Binding ContractsCount}" Style="{StaticResource StatValueStyle}" />
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="✓" TextColor="{StaticResource StatTrendGreen}" FontSize="11" VerticalOptions="Center" />
+                                <Label Text="{Binding ContractsTrend}" Style="{StaticResource StatTrendStyle}" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
 
                     <!-- Revenue -->
                     <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource StatCardStyle}">
-                        <VerticalStackLayout Spacing="6">
+                        <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
                                 <Label Grid.Column="0"
                                        Text="REVENUE"
                                        Style="{StaticResource StatLabelStyle}" />
-                                <Border Grid.Column="1"
-                                        BackgroundColor="#33FFFFFF"
-                                        Stroke="Transparent"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
-                                        Padding="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="9" />
-                                    </Border.StrokeShape>
+                                <Border Grid.Column="1" Style="{StaticResource StatIconChipStyle}">
                                     <Image Source="stat_dollar.png"
-                                           WidthRequest="14"
-                                           HeightRequest="14"
+                                           WidthRequest="13"
+                                           HeightRequest="13"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center" />
                                 </Border>
                             </Grid>
                             <Label Text="{Binding RevenueValue}" Style="{StaticResource StatValueStyle}" />
-                            <HorizontalStackLayout Spacing="4">
-                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" />
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Label Text="↗" TextColor="{StaticResource StatTrendGreen}" FontSize="11" VerticalOptions="Center" />
                                 <Label Text="{Binding RevenueTrend}" Style="{StaticResource StatTrendStyle}" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
@@ -460,34 +457,27 @@
 
                     <!-- Pending -->
                     <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource StatCardStyle}">
-                        <VerticalStackLayout Spacing="6">
+                        <VerticalStackLayout Spacing="8">
                             <Grid ColumnDefinitions="*,Auto" VerticalOptions="Start">
                                 <Label Grid.Column="0"
                                        Text="PENDING"
                                        Style="{StaticResource StatLabelStyle}" />
-                                <Border Grid.Column="1"
-                                        BackgroundColor="#33FFFFFF"
-                                        Stroke="Transparent"
-                                        WidthRequest="30"
-                                        HeightRequest="30"
-                                        Padding="0">
-                                    <Border.StrokeShape>
-                                        <RoundRectangle CornerRadius="9" />
-                                    </Border.StrokeShape>
+                                <Border Grid.Column="1" Style="{StaticResource StatIconChipStyle}">
                                     <Image Source="stat_clock.png"
-                                           WidthRequest="14"
-                                           HeightRequest="14"
+                                           WidthRequest="13"
+                                           HeightRequest="13"
                                            HorizontalOptions="Center"
                                            VerticalOptions="Center" />
                                 </Border>
                             </Grid>
                             <Label Text="{Binding PendingValue}" Style="{StaticResource StatValueStyle}" />
-                            <HorizontalStackLayout Spacing="4">
-                                <Image Source="icon_invoices_tile.png" WidthRequest="11" HeightRequest="11" />
+                            <HorizontalStackLayout Spacing="4" VerticalOptions="Center">
+                                <Image Source="stat_clock.png" WidthRequest="11" HeightRequest="11" VerticalOptions="Center" />
                                 <Label Text="{Binding PendingTrend}"
                                        TextColor="{StaticResource StatTrendCream}"
                                        FontSize="11"
-                                       FontFamily="OpenSansSemibold" />
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center" />
                             </HorizontalStackLayout>
                         </VerticalStackLayout>
                     </Border>
@@ -497,13 +487,12 @@
         </Border>
 
         <!-- ============================================================ -->
-        <!-- BODY                                                           -->
+        <!-- BODY (rendered inside the outer ScrollView with the headers)   -->
         <!-- ============================================================ -->
-        <ScrollView Grid.Row="1">
-            <Grid>
+        <Grid>
 
                 <!-- Onboarding body -->
-                <VerticalStackLayout Padding="20,24,20,24"
+                <VerticalStackLayout Padding="20,24,20,96"
                                      Spacing="16"
                                      IsVisible="{Binding IsOnboardingPending}">
                     <Border BackgroundColor="{StaticResource White}"
@@ -535,9 +524,36 @@
                 </VerticalStackLayout>
 
                 <!-- Completed body -->
-                <VerticalStackLayout Padding="16,18,16,16"
+                <VerticalStackLayout Padding="16,18,16,96"
                                      Spacing="18"
                                      IsVisible="{Binding IsOnboardingComplete}">
+
+                    <!-- Customer Lookup pill (gold search bar) -->
+                    <Border BackgroundColor="{StaticResource BrandGold}"
+                            Stroke="Transparent"
+                            Padding="18,14"
+                            AutomationId="DashboardCustomerLookup">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CustomerLookupCommand}" />
+                        </Border.GestureRecognizers>
+                        <HorizontalStackLayout Spacing="10"
+                                               HorizontalOptions="Center"
+                                               VerticalOptions="Center">
+                            <Image Source="icon_search.png"
+                                   WidthRequest="18"
+                                   HeightRequest="18"
+                                   VerticalOptions="Center" />
+                            <Label Text="Customer Lookup"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
 
                     <!-- Quick Actions card -->
                     <Border BackgroundColor="{StaticResource White}"
@@ -681,13 +697,14 @@
                         </VerticalStackLayout>
                     </Border>
 
-                    <!-- Action Required card -->
+                    <!-- Action Required card (only when /v1/contractor/government-id has no fileUrl) -->
                     <Border BackgroundColor="{StaticResource ActionRequiredBg}"
                             Stroke="{StaticResource ActionRequiredBorder}"
                             StrokeThickness="1"
-                            Padding="16">
+                            Padding="16"
+                            IsVisible="{Binding ShowActionRequired}">
                         <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="14" />
+                            <RoundRectangle CornerRadius="12" />
                         </Border.StrokeShape>
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Command="{Binding CompleteActionCommand}" />
@@ -750,7 +767,7 @@
                                             StrokeThickness="1"
                                             Padding="16,14">
                                         <Border.StrokeShape>
-                                            <RoundRectangle CornerRadius="14" />
+                                            <RoundRectangle CornerRadius="12" />
                                         </Border.StrokeShape>
 
                                         <Grid ColumnDefinitions="*,Auto" RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
@@ -843,22 +860,26 @@
                     </VerticalStackLayout>
 
                 </VerticalStackLayout>
-            </Grid>
+        </Grid>
+
+            </VerticalStackLayout>
         </ScrollView>
 
         <!-- ============================================================ -->
-        <!-- TAB BAR (shared)                                               -->
+        <!-- TAB BAR (shared, floating rounded pill)                        -->
         <!-- ============================================================ -->
-        <Border Grid.Row="2"
-                BackgroundColor="{StaticResource White}"
+        <Border BackgroundColor="{StaticResource White}"
                 Stroke="#EAECF2"
                 StrokeThickness="1"
-                Padding="12,8,12,12">
+                Padding="12,8,12,8"
+                Margin="14,0,14,16"
+                HorizontalOptions="Fill"
+                VerticalOptions="End">
             <Border.StrokeShape>
-                <RoundRectangle CornerRadius="20,20,0,0" />
+                <RoundRectangle CornerRadius="32" />
             </Border.StrokeShape>
             <Border.Shadow>
-                <Shadow Brush="Black" Opacity="0.08" Radius="14" Offset="0,-4" />
+                <Shadow Brush="Black" Opacity="0.12" Radius="18" Offset="0,4" />
             </Border.Shadow>
 
             <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="4">
@@ -897,6 +918,9 @@
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabProjects">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ProjectsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
                     <Image Source="tab_projects.png" WidthRequest="22" HeightRequest="22" />
                     <Label Text="Projects" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
@@ -906,6 +930,9 @@
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabInvoices">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding InvoicesCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
                     <Image Source="tab_invoices.png" WidthRequest="22" HeightRequest="22" />
                     <Label Text="Invoices" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>
@@ -915,6 +942,9 @@
                                      HorizontalOptions="Center"
                                      Spacing="4"
                                      AutomationId="TabReports">
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ReportsCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
                     <Image Source="tab_reports.png" WidthRequest="22" HeightRequest="22" />
                     <Label Text="Reports" TextColor="{StaticResource TabIconMuted}" FontSize="11" HorizontalTextAlignment="Center" />
                 </VerticalStackLayout>

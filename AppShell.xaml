@@ -41,6 +41,21 @@
     <ShellContent Route="contracts"
                   ContentTemplate="{DataTemplate views:ContractsListPage}" />
 
+    <ShellContent Route="projects"
+                  ContentTemplate="{DataTemplate views:ProjectsListPage}" />
+
+    <ShellContent Route="invoices"
+                  ContentTemplate="{DataTemplate views:InvoicesListPage}" />
+
+    <ShellContent Route="reports"
+                  ContentTemplate="{DataTemplate views:ReportsPage}" />
+
+    <ShellContent Route="changepassword"
+                  ContentTemplate="{DataTemplate views:ChangePasswordPage}" />
+
+    <ShellContent Route="notifications"
+                  ContentTemplate="{DataTemplate views:NotificationsPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 

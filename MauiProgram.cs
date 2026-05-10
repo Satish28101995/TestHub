@@ -42,6 +42,11 @@ namespace TestHub
             builder.Services.AddTransient<ProfileViewModel>();
             builder.Services.AddTransient<NewContractViewModel>();
             builder.Services.AddTransient<ContractsListViewModel>();
+            builder.Services.AddTransient<ProjectsListViewModel>();
+            builder.Services.AddTransient<InvoicesListViewModel>();
+            builder.Services.AddTransient<ReportsViewModel>();
+            builder.Services.AddTransient<ChangePasswordViewModel>();
+            builder.Services.AddTransient<NotificationsViewModel>();
 
             // ---------- Pages ----------
             builder.Services.AddTransient<LoginPage>();
@@ -53,6 +58,11 @@ namespace TestHub
             builder.Services.AddTransient<ProfilePage>();
             builder.Services.AddTransient<NewContractPage>();
             builder.Services.AddTransient<ContractsListPage>();
+            builder.Services.AddTransient<ProjectsListPage>();
+            builder.Services.AddTransient<InvoicesListPage>();
+            builder.Services.AddTransient<ReportsPage>();
+            builder.Services.AddTransient<ChangePasswordPage>();
+            builder.Services.AddTransient<NotificationsPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();
