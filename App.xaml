@@ -12,6 +12,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <converters:InverseBoolConverter x:Key="InverseBoolConverter" />
+            <converters:WidthMultiplyConverter x:Key="WidthMultiplyConverter" />
+            <converters:FractionToColumnsConverter x:Key="FractionToColumnsConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

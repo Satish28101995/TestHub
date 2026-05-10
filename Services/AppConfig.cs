@@ -19,6 +19,9 @@ public static class AppConfig
         public const string UpdateSignature  = "v1/contractor/update-signature";
         public const string GetTerms         = "v1/contractor/terms";
         public const string UpdateTerms      = "v1/contractor/update-terms";
+        public const string CustomerDetail   = "v1/Customers/detail";
+        public const string AddUpdateContract = "v1/contractor/contracts/add-update";
+        public const string Contracts        = "v1/contractor/contracts";
     }
 
     public static class Headers

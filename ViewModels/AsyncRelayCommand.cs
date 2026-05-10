@@ -48,6 +48,52 @@ public sealed class AsyncRelayCommand : ICommand
 }
 
 /// <summary>
+/// Async ICommand variant that accepts a typed parameter.
+/// </summary>
+public sealed class AsyncRelayCommand<T> : ICommand
+{
+    private readonly Func<T?, Task> _execute;
+    private readonly Predicate<T?>? _canExecute;
+    private bool _isExecuting;
+
+    public AsyncRelayCommand(Func<T?, Task> execute, Predicate<T?>? canExecute = null)
+    {
+        _execute = execute ?? throw new ArgumentNullException(nameof(execute));
+        _canExecute = canExecute;
+    }
+
+    public event EventHandler? CanExecuteChanged;
+
+    public bool CanExecute(object? parameter)
+        => !_isExecuting && (_canExecute?.Invoke(Cast(parameter)) ?? true);
+
+    public async void Execute(object? parameter)
+    {
+        if (!CanExecute(parameter))
+        {
+            return;
+        }
+
+        try
+        {
+            _isExecuting = true;
+            RaiseCanExecuteChanged();
+            await _execute(Cast(parameter)).ConfigureAwait(true);
+        }
+        finally
+        {
+            _isExecuting = false;
+            RaiseCanExecuteChanged();
+        }
+    }
+
+    public void RaiseCanExecuteChanged()
+        => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+
+    private static T? Cast(object? parameter) => parameter is T t ? t : default;
+}
+
+/// <summary>
 /// Synchronous relay command for fire-and-forget UI commands.
 /// </summary>
 public sealed class RelayCommand : ICommand

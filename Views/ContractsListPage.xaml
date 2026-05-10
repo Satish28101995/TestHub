@@ -1,0 +1,425 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.ContractsListPage"
+             x:Name="ContractsRoot"
+             x:DataType="vm:ContractsListViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource CardBg}">
+
+    <ContentPage.Resources>
+        <Color x:Key="ProgressTrack">#E5E7EB</Color>
+        <Color x:Key="ProgressLabelColor">#6366F1</Color>
+        <Color x:Key="MutedText">#94A3B8</Color>
+        <Color x:Key="LabelText">#64748B</Color>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+            <Setter Property="Stroke" Value="#EAECF2" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="14" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="14" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ============================================================ -->
+        <!-- HEADER                                                         -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource White}"
+                Stroke="#EAECF2"
+                StrokeThickness="0,0,0,1"
+                Padding="14,40,14,14">
+            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                <!-- Back button: large tappable pill so the arrow is easy to hit -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#F1F5F9"
+                        Stroke="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        VerticalOptions="Center"
+                        AutomationId="ContractsBackButton">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="icon_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <Label Grid.Column="1"
+                       Text="Contracts"
+                       TextColor="{StaticResource BrandNavy}"
+                       FontSize="20"
+                       FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold"
+                       VerticalOptions="Center" />
+
+                <!-- + Add Contract pill -->
+                <Border Grid.Column="2"
+                        BackgroundColor="{StaticResource BrandGold}"
+                        Stroke="Transparent"
+                        Padding="14,8"
+                        AutomationId="AddContractButton">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="999" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding AddContractCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                        <Label Text="+"
+                               TextColor="{StaticResource White}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               VerticalOptions="Center" />
+                        <Label Text="Add Contract"
+                               TextColor="{StaticResource White}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- BODY (paginated CollectionView)                                -->
+        <!-- ============================================================ -->
+        <RefreshView Grid.Row="1"
+                     IsRefreshing="{Binding IsBusy, Mode=OneWay}"
+                     Command="{Binding RefreshCommand}">
+            <CollectionView ItemsSource="{Binding Items}"
+                            SelectionMode="None"
+                            RemainingItemsThreshold="3"
+                            RemainingItemsThresholdReachedCommand="{Binding LoadMoreCommand}">
+
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+                </CollectionView.ItemsLayout>
+
+                <!-- ===================== HEADER ===================== -->
+                <CollectionView.Header>
+                    <VerticalStackLayout Padding="14,14,14,4" Spacing="16">
+
+                        <!-- Summary cards -->
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="10">
+                            <!-- Active -->
+                            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Padding="10,14">
+                                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                    <Image Source="summary_active.png"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding ActiveCount}"
+                                           TextColor="{StaticResource BrandNavy}"
+                                           FontSize="22"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Active"
+                                           TextColor="#2563EB"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Pending -->
+                            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Padding="10,14">
+                                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                    <Image Source="summary_pending.png"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding PendingCount}"
+                                           TextColor="{StaticResource BrandNavy}"
+                                           FontSize="22"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Pending"
+                                           TextColor="#F97316"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+
+                            <!-- Completed -->
+                            <Border Grid.Column="2" Style="{StaticResource CardStyle}" Padding="10,14">
+                                <VerticalStackLayout Spacing="8" HorizontalOptions="Center">
+                                    <Image Source="summary_completed.png"
+                                           WidthRequest="40"
+                                           HeightRequest="40"
+                                           HorizontalOptions="Center" />
+                                    <Label Text="{Binding CompletedCount}"
+                                           TextColor="{StaticResource BrandNavy}"
+                                           FontSize="22"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                    <Label Text="Completed"
+                                           TextColor="#10B981"
+                                           FontSize="12"
+                                           FontFamily="OpenSansSemibold"
+                                           HorizontalTextAlignment="Center" />
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <!-- All Contracts header + accent line -->
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="10">
+                            <Label Grid.Column="0"
+                                   Text="All Contracts"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="17"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center" />
+                            <Border Grid.Column="1"
+                                    Stroke="Transparent"
+                                    HeightRequest="3"
+                                    WidthRequest="64"
+                                    VerticalOptions="Center">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="2" />
+                                </Border.StrokeShape>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="{StaticResource BrandNavy}" Offset="0.0" />
+                                        <GradientStop Color="{StaticResource BrandGold}" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </CollectionView.Header>
+
+                <!-- ===================== ITEM TEMPLATE ===================== -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ContractListItemViewModel">
+                        <Border BackgroundColor="{StaticResource White}"
+                                Stroke="#EAECF2"
+                                StrokeThickness="1"
+                                Padding="14"
+                                Margin="14,0,14,0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="14" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer
+                                    Command="{Binding BindingContext.OpenContractCommand, Source={x:Reference ContractsRoot}}"
+                                    CommandParameter="{Binding .}" />
+                            </Border.GestureRecognizers>
+
+                            <VerticalStackLayout Spacing="10">
+
+                                <!-- Title row: name + status icon + status pill -->
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                                    <HorizontalStackLayout Grid.Column="0" Spacing="8" VerticalOptions="Center">
+                                        <Label Text="{Binding ProjectName}"
+                                               TextColor="{StaticResource BrandNavy}"
+                                               FontSize="16"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold"
+                                               VerticalOptions="Center" />
+                                        <Image Source="icon_check_circle.png"
+                                               WidthRequest="16"
+                                               HeightRequest="16"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding IsHealthyStatus}" />
+                                        <Image Source="icon_warn_circle.png"
+                                               WidthRequest="16"
+                                               HeightRequest="16"
+                                               VerticalOptions="Center"
+                                               IsVisible="{Binding IsPendingStatus}" />
+                                    </HorizontalStackLayout>
+
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{Binding StatusBadgeBackground}"
+                                            Stroke="Transparent"
+                                            Padding="10,4"
+                                            VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="999" />
+                                        </Border.StrokeShape>
+                                        <Label Text="{Binding StatusBadgeLabel}"
+                                               TextColor="{Binding StatusBadgeText}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold" />
+                                    </Border>
+                                </Grid>
+
+                                <!-- Customer + date row -->
+                                <HorizontalStackLayout Spacing="14">
+                                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                        <Ellipse Fill="{StaticResource BrandGold}"
+                                                 WidthRequest="6"
+                                                 HeightRequest="6"
+                                                 VerticalOptions="Center" />
+                                        <Label Text="{Binding CustomerName}"
+                                               TextColor="{StaticResource LabelText}"
+                                               FontSize="12"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                    <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                        <Image Source="icon_doc_small.png"
+                                               WidthRequest="13"
+                                               HeightRequest="13"
+                                               VerticalOptions="Center" />
+                                        <Label Text="{Binding DateDisplay}"
+                                               TextColor="{StaticResource LabelText}"
+                                               FontSize="12"
+                                               VerticalOptions="Center" />
+                                    </HorizontalStackLayout>
+                                </HorizontalStackLayout>
+
+                                <!-- Milestone progress (only when milestones exist) -->
+                                <VerticalStackLayout Spacing="6" IsVisible="{Binding HasMilestones}">
+                                    <Grid ColumnDefinitions="*,Auto">
+                                        <Label Grid.Column="0"
+                                               Text="Milestone Progress"
+                                               TextColor="{StaticResource LabelText}"
+                                               FontSize="11"
+                                               FontFamily="OpenSansSemibold" />
+                                        <Label Grid.Column="1"
+                                               Text="{Binding ProgressLabel}"
+                                               TextColor="{StaticResource ProgressLabelColor}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold" />
+                                    </Grid>
+
+                                    <!--
+                                        Track + filled gradient bar.
+                                        ColumnDefinitions are computed by FractionToColumnsConverter
+                                        from completedMilestones / totalMilestones — column 0 holds
+                                        the gradient fill, column 1 is the empty remainder.
+                                    -->
+                                    <Grid HeightRequest="6"
+                                          BackgroundColor="{StaticResource ProgressTrack}"
+                                          ColumnDefinitions="{Binding ProgressFraction, Converter={StaticResource FractionToColumnsConverter}}">
+                                        <Border Grid.Column="0"
+                                                Stroke="Transparent"
+                                                StrokeThickness="0"
+                                                HorizontalOptions="Fill"
+                                                VerticalOptions="Fill">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="3" />
+                                            </Border.StrokeShape>
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                                    <GradientStop Color="{StaticResource BrandNavy}" Offset="0.0" />
+                                                    <GradientStop Color="{StaticResource BrandGold}" Offset="1.0" />
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                        </Border>
+                                    </Grid>
+                                </VerticalStackLayout>
+
+                                <BoxView HeightRequest="1" Color="#F1F5F9" Margin="0,2,0,0" />
+
+                                <!-- Footer: contract value + PDF + chevron -->
+                                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="12">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="2" VerticalOptions="Center">
+                                        <Label Text="CONTRACT VALUE"
+                                               TextColor="{StaticResource MutedText}"
+                                               FontSize="10"
+                                               FontFamily="OpenSansSemibold"
+                                               CharacterSpacing="1" />
+                                        <Label Text="{Binding AmountDisplay}"
+                                               TextColor="{StaticResource BrandNavy}"
+                                               FontSize="18"
+                                               FontAttributes="Bold"
+                                               FontFamily="OpenSansSemibold" />
+                                    </VerticalStackLayout>
+
+                                    <Border Grid.Column="1"
+                                            BackgroundColor="{StaticResource White}"
+                                            Stroke="#E5E7EB"
+                                            StrokeThickness="1"
+                                            Padding="14,8"
+                                            VerticalOptions="Center">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="999" />
+                                        </Border.StrokeShape>
+                                        <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                            <Image Source="icon_pdf_download.png"
+                                                   WidthRequest="14"
+                                                   HeightRequest="14"
+                                                   VerticalOptions="Center" />
+                                            <Label Text="PDF"
+                                                   TextColor="{StaticResource BrandNavy}"
+                                                   FontSize="12"
+                                                   FontAttributes="Bold"
+                                                   FontFamily="OpenSansSemibold"
+                                                   VerticalOptions="Center" />
+                                        </HorizontalStackLayout>
+                                    </Border>
+
+                                    <Image Grid.Column="2"
+                                           Source="icon_chevron_right.png"
+                                           WidthRequest="18"
+                                           HeightRequest="18"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </VerticalStackLayout>
+                        </Border>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <!-- ===================== FOOTER ===================== -->
+                <CollectionView.Footer>
+                    <VerticalStackLayout Padding="14,14,14,28" Spacing="8">
+                        <ActivityIndicator IsRunning="{Binding IsLoadingMore}"
+                                           IsVisible="{Binding IsLoadingMore}"
+                                           Color="{StaticResource BrandGold}"
+                                           HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </CollectionView.Footer>
+
+                <!-- ===================== EMPTY STATE ===================== -->
+                <CollectionView.EmptyView>
+                    <Grid Padding="24,40">
+                        <VerticalStackLayout Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Image Source="icon_doc_tile.png"
+                                   WidthRequest="56"
+                                   HeightRequest="56"
+                                   HorizontalOptions="Center"
+                                   Opacity="0.7" />
+                            <Label Text="No contracts yet"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="15"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   HorizontalTextAlignment="Center" />
+                            <Label Text="Tap “+ Add Contract” to create your first one."
+                                   TextColor="{StaticResource MutedText}"
+                                   FontSize="12"
+                                   HorizontalTextAlignment="Center" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </CollectionView.EmptyView>
+            </CollectionView>
+        </RefreshView>
+    </Grid>
+</ContentPage>

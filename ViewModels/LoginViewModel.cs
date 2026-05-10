@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 using TestHub.Models.Auth;
+using TestHub.Models.Contractor;
 using TestHub.Services;
 
 namespace TestHub.ViewModels;
@@ -12,6 +13,9 @@ public sealed class LoginViewModel : BaseViewModel
         RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
     private readonly IAuthService _auth;
+    private readonly IApiClient _api;
+    private readonly ISessionStore _session;
+    private readonly IRememberedAccountStore _remember;
 
     private string _email = string.Empty;
     private string _password = string.Empty;
@@ -20,9 +24,25 @@ public sealed class LoginViewModel : BaseViewModel
     private string _emailError = string.Empty;
     private string _passwordError = string.Empty;
 
-    public LoginViewModel(IAuthService auth)
+    public LoginViewModel(
+        IAuthService auth,
+        IApiClient api,
+        ISessionStore session,
+        IRememberedAccountStore remember)
     {
         _auth = auth;
+        _api = api;
+        _session = session;
+        _remember = remember;
+
+        // Pre-populate from "Remember me" preferences. We seed the backing
+        // fields directly so the binding on first appear shows the saved
+        // values without firing OnPropertyChanged before the page subscribes.
+        if (_remember.ShouldRemember)
+        {
+            _email = _remember.SavedEmail ?? string.Empty;
+            _rememberMe = true;
+        }
 
         SignInCommand = new AsyncRelayCommand(SignInAsync);
         TogglePasswordCommand = new RelayCommand(() => IsPasswordHidden = !IsPasswordHidden);
@@ -133,6 +153,23 @@ public sealed class LoginViewModel : BaseViewModel
             // password field before leaving the page.
             Password = string.Empty;
 
+            // Persist or wipe the "Remember me" choice based on what the
+            // checkbox is currently showing. Only the email is stored —
+            // never the password.
+            if (RememberMe)
+            {
+                _remember.Save(Email.Trim());
+            }
+            else
+            {
+                _remember.Clear();
+            }
+
+            // Preload onboarding status so the dashboard can pick the right
+            // layout (checklist vs. rich) without making the user wait for
+            // an extra round-trip on the very first appear.
+            await PreloadAccountStatusAsync().ConfigureAwait(true);
+
             if (Shell.Current is not null)
             {
                 await Shell.Current.GoToAsync("//dashboard").ConfigureAwait(true);
@@ -141,6 +178,28 @@ public sealed class LoginViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private async Task PreloadAccountStatusAsync()
+    {
+        try
+        {
+            var statusResult = await _api
+                .GetAsync<AccountStatusDto>(AppConfig.Endpoints.AccountStatus, requireAuth: true)
+                .ConfigureAwait(true);
+
+            // Stash whatever we got — even a null on failure is fine, the
+            // dashboard will fall back to its own fetch when nothing's there.
+            if (statusResult.IsSuccess && statusResult.Data is not null)
+            {
+                _session.StashAccountStatus(statusResult.Data);
+            }
+        }
+        catch
+        {
+            // Network failure here shouldn't block the login. The dashboard
+            // will retry on appear.
         }
     }
 

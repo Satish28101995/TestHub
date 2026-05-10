@@ -1,4 +1,5 @@
 using TestHub.Models.Auth;
+using TestHub.Models.Contractor;
 
 namespace TestHub.Services;
 
@@ -17,4 +18,18 @@ public interface ISessionStore
     Task SaveAsync(LoginResponse user);
     Task LoadAsync();
     Task ClearAsync();
+
+    /// <summary>
+    /// Stash the freshly-fetched account status so the next page that needs
+    /// it can read it without a duplicate network call. Lives in memory only
+    /// — the value is cleared on consume and on sign-out.
+    /// </summary>
+    void StashAccountStatus(AccountStatusDto? status);
+
+    /// <summary>
+    /// Returns and clears the previously stashed account status. Returns
+    /// <c>null</c> when nothing is pending consumption (the caller should
+    /// then fetch fresh data from the API).
+    /// </summary>
+    AccountStatusDto? ConsumeAccountStatus();
 }

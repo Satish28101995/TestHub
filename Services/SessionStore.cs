@@ -1,5 +1,6 @@
 using System.Text.Json;
 using TestHub.Models.Auth;
+using TestHub.Models.Contractor;
 
 namespace TestHub.Services;
 
@@ -8,6 +9,8 @@ public sealed class SessionStore : ISessionStore
     private const string AccessTokenKey = "th.accessToken";
     private const string AuthTokenKey   = "th.authToken";
     private const string UserKey        = "th.currentUser";
+
+    private AccountStatusDto? _stashedAccountStatus;
 
     public string? AccessToken { get; private set; }
     public string? AuthorizationToken { get; private set; }
@@ -59,6 +62,7 @@ public sealed class SessionStore : ISessionStore
         AccessToken = null;
         AuthorizationToken = null;
         CurrentUser = null;
+        _stashedAccountStatus = null;
 
         try
         {
@@ -72,5 +76,15 @@ public sealed class SessionStore : ISessionStore
         }
 
         return Task.CompletedTask;
+    }
+
+    public void StashAccountStatus(AccountStatusDto? status)
+        => _stashedAccountStatus = status;
+
+    public AccountStatusDto? ConsumeAccountStatus()
+    {
+        var snapshot = _stashedAccountStatus;
+        _stashedAccountStatus = null;
+        return snapshot;
     }
 }

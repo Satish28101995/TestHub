@@ -1,0 +1,773 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:TestHub.ViewModels"
+             x:Class="TestHub.Views.NewContractPage"
+             x:DataType="vm:NewContractViewModel"
+             Shell.NavBarIsVisible="False"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.TabBarIsVisible="False"
+             BackgroundColor="{StaticResource CardBg}">
+
+    <ContentPage.Resources>
+        <Color x:Key="FieldBorder">#E5E7EB</Color>
+        <Color x:Key="FieldBorderActive">#E0A93B</Color>
+        <Color x:Key="FieldFill">#FFFFFF</Color>
+        <Color x:Key="LabelMuted">#475569</Color>
+        <Color x:Key="PlaceholderMuted">#94A3B8</Color>
+        <Color x:Key="MoneyGreen">#10B981</Color>
+        <Color x:Key="MoneyGreenBg">#D1FAE5</Color>
+        <Color x:Key="DangerRed">#EF4444</Color>
+        <Color x:Key="MilestoneNavyBadge">#1F2547</Color>
+        <Color x:Key="MilestoneGoldBadge">#E0A93B</Color>
+        <Color x:Key="ReadyAmberBg">#FEF3C7</Color>
+
+        <!-- Reusable styles -->
+        <Style x:Key="FieldLabel" TargetType="Label">
+            <Setter Property="TextColor" Value="{StaticResource LabelMuted}" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="OpenSansSemibold" />
+        </Style>
+
+        <Style x:Key="FieldShell" TargetType="Border">
+            <Setter Property="Stroke" Value="{StaticResource FieldBorder}" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="BackgroundColor" Value="{StaticResource FieldFill}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="HeightRequest" Value="48" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="10" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FieldShellEditable" TargetType="Border" BasedOn="{StaticResource FieldShell}">
+            <Setter Property="Stroke" Value="{StaticResource FieldBorderActive}" />
+        </Style>
+
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="{StaticResource White}" />
+            <Setter Property="Stroke" Value="#EAECF2" />
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Padding" Value="16" />
+            <Setter Property="StrokeShape">
+                <Setter.Value>
+                    <RoundRectangle CornerRadius="14" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ============================================================ -->
+        <!-- HEADER                                                         -->
+        <!-- ============================================================ -->
+        <Border Grid.Row="0"
+                BackgroundColor="{StaticResource White}"
+                Stroke="#EAECF2"
+                StrokeThickness="0,0,0,1"
+                Padding="10,40,16,14">
+            <Grid ColumnDefinitions="Auto,*" ColumnSpacing="6">
+                <!-- Back button: large tappable pill so the arrow is easy to hit -->
+                <Border Grid.Column="0"
+                        BackgroundColor="#F1F5F9"
+                        Stroke="Transparent"
+                        WidthRequest="40"
+                        HeightRequest="40"
+                        Padding="0"
+                        VerticalOptions="Center"
+                        AutomationId="NewContractBackButton">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <Image Source="icon_back.png"
+                           WidthRequest="20"
+                           HeightRequest="20"
+                           HorizontalOptions="Center"
+                           VerticalOptions="Center" />
+                </Border>
+
+                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                    <Label Text="New Contract"
+                           TextColor="{StaticResource BrandNavy}"
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           FontFamily="OpenSansSemibold" />
+                    <Label Text="{Binding ProjectSubtitle}"
+                           TextColor="{StaticResource PlaceholderMuted}"
+                           FontSize="13" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================ -->
+        <!-- BODY                                                           -->
+        <!-- ============================================================ -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="14,14,14,28" Spacing="14">
+
+                <!-- ============= Customer Information ============= -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Border Grid.Column="0"
+                                    BackgroundColor="{StaticResource BrandNavy}"
+                                    Stroke="Transparent"
+                                    WidthRequest="44"
+                                    HeightRequest="44"
+                                    Padding="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <Image Source="icon_user_badge.png"
+                                       WidthRequest="22"
+                                       HeightRequest="22"
+                                       HorizontalOptions="Center"
+                                       VerticalOptions="Center" />
+                            </Border>
+                            <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                <Label Text="Customer Information"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold" />
+                                <Label Text="Enter customer details"
+                                       TextColor="{StaticResource PlaceholderMuted}"
+                                       FontSize="12" />
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Email (first — drives customer auto-fill) -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Email" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Entry x:Name="CustomerEmailEntry"
+                                       Text="{Binding CustomerEmail}"
+                                       Placeholder="test@gmail.com"
+                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       Keyboard="Email"
+                                       Margin="14,0"
+                                       VerticalOptions="Center"
+                                       Unfocused="OnCustomerEmailUnfocused" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Customer Name -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Customer Name" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Entry Text="{Binding CustomerName}"
+                                       Placeholder="test"
+                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       Margin="14,0"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Phone (numeric only, capped at 10 digits) -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Phone Number" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Entry Text="{Binding CustomerPhone}"
+                                       Placeholder="XXXXXXXXXX"
+                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       Keyboard="Numeric"
+                                       MaxLength="10"
+                                       Margin="14,0"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Address -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Address" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Entry Text="{Binding CustomerAddress}"
+                                       Placeholder="Enter property address"
+                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       Margin="14,0"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============= Project Details ============= -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Project Details"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+
+                        <!-- Project Name -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Project Name" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Entry Text="{Binding ProjectName}"
+                                       Placeholder="Project Name"
+                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="14"
+                                       Margin="14,0"
+                                       VerticalOptions="Center" />
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- Dates -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                <Label Text="Start Date" Style="{StaticResource FieldLabel}" />
+                                <Border Style="{StaticResource FieldShell}">
+                                    <Grid ColumnDefinitions="*,Auto" Margin="14,0,12,0">
+                                        <DatePicker Grid.Column="0"
+                                                    Date="{Binding StartDate}"
+                                                    Format="dd/MM/yyyy"
+                                                    TextColor="{StaticResource BrandNavy}"
+                                                    FontSize="14"
+                                                    BackgroundColor="Transparent"
+                                                    VerticalOptions="Center" />
+                                        <Image Grid.Column="1"
+                                               Source="icon_calendar_field.png"
+                                               WidthRequest="18"
+                                               HeightRequest="18"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+
+                            <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                <Label Text="End Date" Style="{StaticResource FieldLabel}" />
+                                <Border Style="{StaticResource FieldShell}">
+                                    <Grid ColumnDefinitions="*,Auto" Margin="14,0,12,0">
+                                        <DatePicker Grid.Column="0"
+                                                    Date="{Binding EndDate}"
+                                                    Format="dd/MM/yyyy"
+                                                    TextColor="{StaticResource BrandNavy}"
+                                                    FontSize="14"
+                                                    BackgroundColor="Transparent"
+                                                    VerticalOptions="Center" />
+                                        <Image Grid.Column="1"
+                                               Source="icon_calendar_field.png"
+                                               WidthRequest="18"
+                                               HeightRequest="18"
+                                               VerticalOptions="Center" />
+                                    </Grid>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+
+                        <!-- Total Contract Amount -->
+                        <VerticalStackLayout Spacing="6">
+                            <Label Text="Total Contract Amount" Style="{StaticResource FieldLabel}" />
+                            <Border Style="{StaticResource FieldShell}">
+                                <Grid ColumnDefinitions="Auto,*" Margin="14,0">
+                                    <Label Grid.Column="0"
+                                           Text="$"
+                                           TextColor="{StaticResource PlaceholderMuted}"
+                                           FontSize="15"
+                                           VerticalOptions="Center"
+                                           Margin="0,0,8,0" />
+                                    <Entry Grid.Column="1"
+                                           Text="{Binding TotalAmountText}"
+                                           Placeholder="0.00"
+                                           PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                           TextColor="{StaticResource BrandNavy}"
+                                           FontSize="14"
+                                           Keyboard="Numeric"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </VerticalStackLayout>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============= Payment Schedule ============= -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                            <Label Grid.Column="0"
+                                   Text="Payment Schedule"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="16"
+                                   FontAttributes="Bold"
+                                   FontFamily="OpenSansSemibold"
+                                   VerticalOptions="Center" />
+
+                            <!-- Save Changes pill (edit mode) -->
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{StaticResource MoneyGreen}"
+                                    Stroke="Transparent"
+                                    Padding="12,8"
+                                    IsVisible="{Binding IsScheduleEditing}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleScheduleCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Image Source="icon_check_white.png"
+                                           WidthRequest="16"
+                                           HeightRequest="16"
+                                           VerticalOptions="Center" />
+                                    <Label Text="Save Changes"
+                                           TextColor="{StaticResource White}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+
+                            <!-- Edit Schedule pill (view mode) -->
+                            <Border Grid.Column="1"
+                                    BackgroundColor="{StaticResource BrandNavy}"
+                                    Stroke="Transparent"
+                                    Padding="12,8"
+                                    IsVisible="{Binding IsScheduleViewing}">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="10" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ToggleScheduleCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6" VerticalOptions="Center">
+                                    <Image Source="icon_edit.png"
+                                           WidthRequest="14"
+                                           HeightRequest="14"
+                                           VerticalOptions="Center" />
+                                    <Label Text="Edit Schedule"
+                                           TextColor="{StaticResource White}"
+                                           FontSize="13"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+                        </Grid>
+
+                        <!-- Inline error -->
+                        <Border BackgroundColor="#FEF2F2"
+                                Stroke="#FECACA"
+                                StrokeThickness="1"
+                                Padding="10,8"
+                                IsVisible="{Binding HasScheduleError}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="8" />
+                            </Border.StrokeShape>
+                            <Label Text="{Binding ScheduleError}"
+                                   TextColor="{StaticResource DangerRed}"
+                                   FontSize="12" />
+                        </Border>
+
+                        <!-- ============ EDIT MODE: editable milestones ============ -->
+                        <VerticalStackLayout Spacing="12" IsVisible="{Binding IsScheduleEditing}">
+                            <CollectionView ItemsSource="{Binding Milestones}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="12" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MilestoneItemViewModel">
+                                        <Border BackgroundColor="#F8FAFC"
+                                                Stroke="#E5E7EB"
+                                                StrokeThickness="1"
+                                                Padding="12">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="12" />
+                                            </Border.StrokeShape>
+                                            <VerticalStackLayout Spacing="10">
+                                                <!-- Top row: number badge + name + delete -->
+                                                <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="10">
+                                                    <Border Grid.Column="0"
+                                                            BackgroundColor="{StaticResource MilestoneNavyBadge}"
+                                                            Stroke="Transparent"
+                                                            WidthRequest="28"
+                                                            HeightRequest="28"
+                                                            Padding="0">
+                                                        <Border.StrokeShape>
+                                                            <RoundRectangle CornerRadius="14" />
+                                                        </Border.StrokeShape>
+                                                        <Label Text="{Binding Index}"
+                                                               TextColor="{StaticResource White}"
+                                                               FontSize="13"
+                                                               FontAttributes="Bold"
+                                                               FontFamily="OpenSansSemibold"
+                                                               HorizontalOptions="Center"
+                                                               VerticalOptions="Center" />
+                                                    </Border>
+                                                    <Border Grid.Column="1" Style="{StaticResource FieldShellEditable}">
+                                                        <Entry Text="{Binding Name}"
+                                                               Placeholder="Milestone name"
+                                                               PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                                               TextColor="{StaticResource BrandNavy}"
+                                                               FontSize="14"
+                                                               Margin="12,0"
+                                                               VerticalOptions="Center" />
+                                                    </Border>
+                                                    <ImageButton Grid.Column="2"
+                                                                 Source="icon_trash_red.png"
+                                                                 BackgroundColor="Transparent"
+                                                                 WidthRequest="28"
+                                                                 HeightRequest="28"
+                                                                 Padding="0"
+                                                                 Command="{Binding DeleteCommand}" />
+                                                </Grid>
+
+                                                <!-- Bottom row: percentage + amount -->
+                                                <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                                                    <VerticalStackLayout Grid.Column="0" Spacing="6">
+                                                        <Label Text="Percentage"
+                                                               TextColor="{StaticResource LabelMuted}"
+                                                               FontSize="12"
+                                                               FontFamily="OpenSansSemibold" />
+                                                        <Border Style="{StaticResource FieldShellEditable}">
+                                                            <Grid ColumnDefinitions="*,Auto" Margin="12,0">
+                                                                <Entry Grid.Column="0"
+                                                                       Text="{Binding PercentageText}"
+                                                                       Placeholder="0"
+                                                                       PlaceholderColor="{StaticResource PlaceholderMuted}"
+                                                                       TextColor="{StaticResource BrandNavy}"
+                                                                       FontSize="14"
+                                                                       Keyboard="Numeric"
+                                                                       VerticalOptions="Center" />
+                                                                <Label Grid.Column="1"
+                                                                       Text="%"
+                                                                       TextColor="{StaticResource PlaceholderMuted}"
+                                                                       FontSize="14"
+                                                                       VerticalOptions="Center"
+                                                                       Margin="6,0,0,0" />
+                                                            </Grid>
+                                                        </Border>
+                                                    </VerticalStackLayout>
+
+                                                    <VerticalStackLayout Grid.Column="1" Spacing="6">
+                                                        <Label Text="Amount"
+                                                               TextColor="{StaticResource LabelMuted}"
+                                                               FontSize="12"
+                                                               FontFamily="OpenSansSemibold" />
+                                                        <Border BackgroundColor="{StaticResource MoneyGreenBg}"
+                                                                Stroke="Transparent"
+                                                                Padding="0"
+                                                                HeightRequest="48">
+                                                            <Border.StrokeShape>
+                                                                <RoundRectangle CornerRadius="10" />
+                                                            </Border.StrokeShape>
+                                                            <Label Text="{Binding AmountDisplay}"
+                                                                   TextColor="{StaticResource MoneyGreen}"
+                                                                   FontSize="15"
+                                                                   FontAttributes="Bold"
+                                                                   FontFamily="OpenSansSemibold"
+                                                                   HorizontalOptions="Center"
+                                                                   VerticalOptions="Center" />
+                                                        </Border>
+                                                    </VerticalStackLayout>
+                                                </Grid>
+                                            </VerticalStackLayout>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+
+                            <!-- Add Milestone (dashed gold) -->
+                            <Border BackgroundColor="{StaticResource White}"
+                                    Stroke="{StaticResource MilestoneGoldBadge}"
+                                    StrokeThickness="1.5"
+                                    StrokeDashArray="4,4"
+                                    Padding="0"
+                                    HeightRequest="46">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12" />
+                                </Border.StrokeShape>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding AddMilestoneCommand}" />
+                                </Border.GestureRecognizers>
+                                <HorizontalStackLayout Spacing="6"
+                                                       HorizontalOptions="Center"
+                                                       VerticalOptions="Center">
+                                    <Image Source="icon_plus_gold.png"
+                                           WidthRequest="18"
+                                           HeightRequest="18"
+                                           VerticalOptions="Center" />
+                                    <Label Text="Add Milestone"
+                                           TextColor="{StaticResource MilestoneGoldBadge}"
+                                           FontSize="14"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold"
+                                           VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                            </Border>
+                        </VerticalStackLayout>
+
+                        <!-- ============ VIEW MODE: collapsed milestones ============ -->
+                        <VerticalStackLayout Spacing="10" IsVisible="{Binding IsScheduleViewing}">
+                            <CollectionView ItemsSource="{Binding Milestones}"
+                                            SelectionMode="None">
+                                <CollectionView.ItemsLayout>
+                                    <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
+                                </CollectionView.ItemsLayout>
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MilestoneItemViewModel">
+                                        <Border BackgroundColor="#FFFFFF"
+                                                Stroke="#EEF1F6"
+                                                StrokeThickness="1"
+                                                Padding="12">
+                                            <Border.StrokeShape>
+                                                <RoundRectangle CornerRadius="12" />
+                                            </Border.StrokeShape>
+                                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                                                <Border Grid.Column="0"
+                                                        BackgroundColor="{StaticResource MilestoneGoldBadge}"
+                                                        Stroke="Transparent"
+                                                        WidthRequest="34"
+                                                        HeightRequest="34"
+                                                        Padding="0"
+                                                        VerticalOptions="Center">
+                                                    <Border.StrokeShape>
+                                                        <RoundRectangle CornerRadius="10" />
+                                                    </Border.StrokeShape>
+                                                    <Label Text="{Binding Index}"
+                                                           TextColor="{StaticResource White}"
+                                                           FontSize="14"
+                                                           FontAttributes="Bold"
+                                                           FontFamily="OpenSansSemibold"
+                                                           HorizontalOptions="Center"
+                                                           VerticalOptions="Center" />
+                                                </Border>
+                                                <VerticalStackLayout Grid.Column="1" Spacing="2" VerticalOptions="Center">
+                                                    <Label Text="{Binding Name}"
+                                                           TextColor="{StaticResource BrandNavy}"
+                                                           FontSize="14"
+                                                           FontAttributes="Bold"
+                                                           FontFamily="OpenSansSemibold" />
+                                                    <Label Text="{Binding PercentOfTotalLabel}"
+                                                           TextColor="{StaticResource PlaceholderMuted}"
+                                                           FontSize="12" />
+                                                </VerticalStackLayout>
+                                                <Label Grid.Column="2"
+                                                       Text="{Binding AmountDisplay}"
+                                                       TextColor="{StaticResource MoneyGreen}"
+                                                       FontSize="16"
+                                                       FontAttributes="Bold"
+                                                       FontFamily="OpenSansSemibold"
+                                                       VerticalOptions="Center" />
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </VerticalStackLayout>
+
+                        <!-- Total bar -->
+                        <Border BackgroundColor="{StaticResource BrandNavy}"
+                                Stroke="Transparent"
+                                Padding="16,12">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="6">
+                                <VerticalStackLayout Grid.Column="0" Spacing="0">
+                                    <Label Text="Total"
+                                           TextColor="{StaticResource White}"
+                                           FontSize="15"
+                                           FontAttributes="Bold"
+                                           FontFamily="OpenSansSemibold" />
+                                    <Label Text="{Binding PercentageSumDisplay}"
+                                           TextColor="#C7D2FE"
+                                           FontSize="11"
+                                           IsVisible="{Binding IsScheduleEditing}" />
+                                </VerticalStackLayout>
+                                <Label Grid.Column="2"
+                                       Text="{Binding TotalAmountDisplay}"
+                                       TextColor="{StaticResource White}"
+                                       FontSize="20"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center" />
+                            </Grid>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============= Terms & Conditions ============= -->
+                <Border Style="{StaticResource CardStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Text="Terms &amp; Conditions"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+
+                        <!-- Read mode -->
+                        <Border BackgroundColor="#F1F5F9"
+                                Stroke="#E2E8F0"
+                                StrokeThickness="1"
+                                Padding="14,12"
+                                IsVisible="{Binding IsTermsViewing}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+                            <Label Text="{Binding TermsText}"
+                                   TextColor="{StaticResource BrandNavy}"
+                                   FontSize="13"
+                                   LineHeight="1.5" />
+                        </Border>
+
+                        <!-- Edit mode -->
+                        <Border BackgroundColor="{StaticResource White}"
+                                Stroke="{StaticResource FieldBorderActive}"
+                                StrokeThickness="1.2"
+                                Padding="10,4"
+                                IsVisible="{Binding IsTermsEditing}">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="10" />
+                            </Border.StrokeShape>
+                            <Editor Text="{Binding TermsText}"
+                                    AutoSize="TextChanges"
+                                    MinimumHeightRequest="180"
+                                    TextColor="{StaticResource BrandNavy}"
+                                    FontSize="13" />
+                        </Border>
+
+                        <Label Text="{Binding EditTermsLabel}"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="13"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalOptions="Center">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding ToggleTermsCommand}" />
+                            </Label.GestureRecognizers>
+                        </Label>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============= Actions: draft state ============= -->
+                <Border Style="{StaticResource CardStyle}"
+                        IsVisible="{Binding IsContractDraft}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="Actions"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold" />
+
+                        <Button Text="Create Contract"
+                                BackgroundColor="{StaticResource BrandNavy}"
+                                TextColor="{StaticResource White}"
+                                FontAttributes="Bold"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="15"
+                                CornerRadius="12"
+                                HeightRequest="50"
+                                Command="{Binding SaveContractCommand}" />
+
+                        <Border BackgroundColor="{StaticResource White}"
+                                Stroke="{StaticResource BrandNavy}"
+                                StrokeThickness="1.4"
+                                Padding="0"
+                                HeightRequest="50">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding DownloadContractCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center">
+                                <Image Source="icon_download.png"
+                                       WidthRequest="18"
+                                       HeightRequest="18"
+                                       VerticalOptions="Center" />
+                                <Label Text="Download Contract"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ============= Ready for Signature: saved state ============= -->
+                <Border Style="{StaticResource CardStyle}"
+                        IsVisible="{Binding IsContractSaved}">
+                    <VerticalStackLayout Spacing="14" HorizontalOptions="Fill">
+                        <Image Source="icon_signature_circle.png"
+                               WidthRequest="60"
+                               HeightRequest="60"
+                               HorizontalOptions="Center" />
+                        <Label Text="Ready for Signature"
+                               TextColor="{StaticResource BrandNavy}"
+                               FontSize="17"
+                               FontAttributes="Bold"
+                               FontFamily="OpenSansSemibold"
+                               HorizontalTextAlignment="Center" />
+                        <Label Text="Contract will be sent via eSignGlobal for secure digital signing"
+                               TextColor="{StaticResource PlaceholderMuted}"
+                               FontSize="12"
+                               HorizontalTextAlignment="Center"
+                               LineHeight="1.4" />
+
+                        <Button Text="Send for E-Signature"
+                                BackgroundColor="{StaticResource BrandNavy}"
+                                TextColor="{StaticResource White}"
+                                FontAttributes="Bold"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="15"
+                                CornerRadius="12"
+                                HeightRequest="50"
+                                ImageSource="icon_send.png"
+                                ContentLayout="Left,8"
+                                Command="{Binding SendForESignatureCommand}" />
+
+                        <Border BackgroundColor="{StaticResource White}"
+                                Stroke="{StaticResource BrandNavy}"
+                                StrokeThickness="1.4"
+                                Padding="0"
+                                HeightRequest="50">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Command="{Binding DownloadContractCommand}" />
+                            </Border.GestureRecognizers>
+                            <HorizontalStackLayout Spacing="8"
+                                                   HorizontalOptions="Center"
+                                                   VerticalOptions="Center">
+                                <Image Source="icon_download.png"
+                                       WidthRequest="18"
+                                       HeightRequest="18"
+                                       VerticalOptions="Center" />
+                                <Label Text="Download Contract"
+                                       TextColor="{StaticResource BrandNavy}"
+                                       FontSize="15"
+                                       FontAttributes="Bold"
+                                       FontFamily="OpenSansSemibold"
+                                       VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
+</ContentPage>

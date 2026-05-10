@@ -44,7 +44,7 @@ public sealed class DashboardViewModel : BaseViewModel
 
         NewQuoteCommand         = new AsyncRelayCommand(() => Coming("New Quote"));
         ProjectsCommand         = new AsyncRelayCommand(() => Coming("Projects"));
-        ContractsCommand        = new AsyncRelayCommand(() => Coming("Contracts"));
+        ContractsCommand        = new AsyncRelayCommand(GoToContractsAsync);
         InvoicesCommand         = new AsyncRelayCommand(() => Coming("Invoices"));
         ReportsCommand          = new AsyncRelayCommand(() => Coming("Reports"));
         CompleteActionCommand   = new AsyncRelayCommand(() => Coming("Premium Verification"));
@@ -199,6 +199,17 @@ public sealed class DashboardViewModel : BaseViewModel
 
     private async Task RefreshAccountStatusAsync()
     {
+        // First try the snapshot stashed by the login flow — that way the
+        // very first dashboard render after sign-in is instant and we don't
+        // double-call /v1/contractor/account-status. Subsequent loads (pull
+        // to refresh, returning to the dashboard) fall through to the API.
+        var preloaded = _session.ConsumeAccountStatus();
+        if (preloaded is not null)
+        {
+            ApplyAccountStatus(preloaded);
+            return;
+        }
+
         try
         {
             IsBusy = true;
@@ -209,10 +220,7 @@ public sealed class DashboardViewModel : BaseViewModel
 
             if (result.IsSuccess && result.Data is not null)
             {
-                IsGovernmentIdVerified   = result.Data.IsGovernmentIdVerified;
-                IsBankAccountLinked      = result.Data.IsBankAccountLinked;
-                IsESignatureCompleted    = result.Data.IsESignatureAdded;
-                IsContractTermsCompleted = result.Data.IsTermsAndConditionsAdded;
+                ApplyAccountStatus(result.Data);
             }
             else
             {
@@ -229,6 +237,14 @@ public sealed class DashboardViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    private void ApplyAccountStatus(AccountStatusDto status)
+    {
+        IsGovernmentIdVerified   = status.IsGovernmentIdVerified;
+        IsBankAccountLinked      = status.IsBankAccountLinked;
+        IsESignatureCompleted    = status.IsESignatureAdded;
+        IsContractTermsCompleted = status.IsTermsAndConditionsAdded;
     }
 
     /// <summary>
@@ -277,6 +293,11 @@ public sealed class DashboardViewModel : BaseViewModel
         => Shell.Current is null
             ? Task.CompletedTask
             : Shell.Current.GoToAsync("//profile");
+
+    private static Task GoToContractsAsync()
+        => Shell.Current is null
+            ? Task.CompletedTask
+            : Shell.Current.GoToAsync("//contracts");
 
     private static Task Coming(string area) =>
         DisplayAlertSafeAsync(area, $"{area} is not implemented yet.", "OK");

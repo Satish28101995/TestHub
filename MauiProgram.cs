@@ -30,6 +30,7 @@ namespace TestHub
             builder.Services.AddSingleton<IHeaderProvider, HeaderProvider>();
             builder.Services.AddSingleton<IApiClient, ApiClient>();
             builder.Services.AddSingleton<IAuthService, AuthService>();
+            builder.Services.AddSingleton<IRememberedAccountStore, RememberedAccountStore>();
 
             // ---------- View models ----------
             builder.Services.AddTransient<LoginViewModel>();
@@ -39,6 +40,8 @@ namespace TestHub
             builder.Services.AddTransient<SignatureViewModel>();
             builder.Services.AddTransient<TermsViewModel>();
             builder.Services.AddTransient<ProfileViewModel>();
+            builder.Services.AddTransient<NewContractViewModel>();
+            builder.Services.AddTransient<ContractsListViewModel>();
 
             // ---------- Pages ----------
             builder.Services.AddTransient<LoginPage>();
@@ -48,6 +51,8 @@ namespace TestHub
             builder.Services.AddTransient<SignaturePage>();
             builder.Services.AddTransient<TermsPage>();
             builder.Services.AddTransient<ProfilePage>();
+            builder.Services.AddTransient<NewContractPage>();
+            builder.Services.AddTransient<ContractsListPage>();
 
 #if DEBUG
             builder.Logging.AddDebug();

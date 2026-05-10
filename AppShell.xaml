@@ -35,6 +35,12 @@
     <ShellContent Route="profile"
                   ContentTemplate="{DataTemplate views:ProfilePage}" />
 
+    <ShellContent Route="newcontract"
+                  ContentTemplate="{DataTemplate views:NewContractPage}" />
+
+    <ShellContent Route="contracts"
+                  ContentTemplate="{DataTemplate views:ContractsListPage}" />
+
     <ShellContent Route="home"
                   ContentTemplate="{DataTemplate views:HomePage}" />
 
